@@ -1,0 +1,19 @@
+.editingToolbar{
+    /*margin-top: 50px;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*width: 286px;*/
+    /*display: block;*/
+    /*align-items: center;*/
+    /*position: absolute;*/
+    /*height: 80%;*/
+    /*background-color: white;*/
+    background-color: white;
+    height: 80vh;
+    top: 50px;
+    left: 78vw;
+    margin-right: 50px;
+    position: absolute;
+    padding: 16px;
+    width: 300px;
+}

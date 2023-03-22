@@ -1,0 +1,39 @@
+.toolbar {
+    top: 50px;
+    width: 50px;
+    display: block;
+    align-items: center;
+    position: absolute;
+    height: 80vh;
+}
+.toolbar__btn button {
+    height: 25px;
+    width: 25px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-size: cover;
+    left: 12px;
+    bottom: 20px;
+}
+.toolbar__btn .mouse{
+    background: url('../assets/img/mouse.png');
+}
+.toolbar__btn .landscape{
+    background: url('../assets/img/landscape.png');
+}
+.toolbar__btn .brush{
+    background: url('../assets/img/brush.png');
+}
+.toolbar__btn .elements{
+    background: url('../assets/img/elements.png');
+}
+.toolbar__btn .text{
+    background: url('../assets/img/text.png');
+}
+.toolbar__btn .contour{
+    background: url('../assets/img/contour.png');
+}
+.toolbar__btn .graph{
+    background: url('../assets/img/graph.png');
+}

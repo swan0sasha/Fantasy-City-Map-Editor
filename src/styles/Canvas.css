@@ -1,0 +1,8 @@
+.canvas {
+    top: 50px;
+    left: 50px;
+    height: 70vh;
+    width: 70vw;
+    position: absolute;
+    background-color: white;
+}
