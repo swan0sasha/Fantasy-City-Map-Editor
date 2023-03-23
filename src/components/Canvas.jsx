@@ -1,11 +1,11 @@
 import React from 'react';
-import Graph from "./canvas/Graph";
+import Graph from "./Graph";
 import "../styles/Canvas.css"
 
-const Canvas = () => {
+const Canvas = ({edgeInstr}) => {
     return (
         <div className="canvas">
-            <Graph/>
+            <Graph edgeI = {edgeInstr}/>
         </div>
     );
 };
