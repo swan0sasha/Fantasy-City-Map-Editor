@@ -3,7 +3,7 @@ import {Helmet, HelmetProvider} from "react-helmet-async";
 
 import "./styles/App.css"
 import Toolbar from "./components/Toolbar";
-import ToolSettings from "./components/UI/EditingToolbar/ToolSettings";
+import ToolSettings from "./components/UI/ToolSettings/ToolSettings";
 import Canvas from "./components/Canvas";
 
 function App() {
@@ -19,19 +19,7 @@ function App() {
         }
     );
 
-    const changeTool = (tool) => {
-        setTools({
-            mouse: false,
-            landscape: false,
-            brush: false,
-            elements: false,
-            text: false,
-            contour: false,
-            graph: false,
-            [tool]: true
-        })
-        console.log(tools)
-    }
+    const [graphMode, setGraphMode] = useState(false);
 
     return (
         <HelmetProvider>
@@ -43,9 +31,9 @@ function App() {
                 <meta name="theme-color" content="#008f68"/>
             </Helmet>
             <div className="App">
-                <Toolbar change={changeTool}/>
-                <ToolSettings tools={tools}/>
-                <Canvas edgeInstr={tools.graph}/>
+                <Toolbar change={setTools}/>
+                <ToolSettings tools={tools} change={setGraphMode}/>
+                <Canvas edgeInstr={graphMode}/>
             </div>
         </HelmetProvider>
     );

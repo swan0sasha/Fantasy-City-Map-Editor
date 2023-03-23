@@ -2,7 +2,17 @@ import React from 'react';
 import "../styles/Toolbar.css"
 const Toolbar = ({change}) => {
     const changeInstrument = (instrument) =>{
-        change(instrument)
+            change({
+                mouse: false,
+                landscape: false,
+                brush: false,
+                elements: false,
+                text: false,
+                contour: false,
+                graph: false,
+                [instrument]: true
+            })
+            console.log(instrument + ' is now active')
     }
     return (
         <div className="toolbar">
