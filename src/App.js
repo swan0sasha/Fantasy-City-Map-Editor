@@ -42,7 +42,7 @@ function App() {
           <div className="App">
               <Toolbar change={changeEditingToolbar}/>
               <EditingToolbar instruments = {editingToolbar}/>
-              <Canvas/>
+              <Canvas edgeInstr={editingToolbar.graph}/>
           </div>
       </HelmetProvider>
   );
