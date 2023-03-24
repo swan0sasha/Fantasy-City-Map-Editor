@@ -1,50 +1,39 @@
 .toolbar {
     top: 50px;
     width: 50px;
-    display: block;
-    align-items: center;
     position: absolute;
-    height: 80vh;
+    height: 800px;
 }
 .toolbar__btn button {
-    height: 25px;
-    width: 25px;
-    border: none;
-    outline: none;
+    height: 31px;
+    width: 31px;
+    border: 3px slategray solid;
     cursor: pointer;
-    background-size: cover;
-    left: 12px;
-    bottom: 20px;
-    margin-left: 13px;
+    margin-left: 9px;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding-top: 20px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 .toolbar__btn .mouse{
     background: url('../assets/img/mouse.png');
 }
 .toolbar__btn .landscape{
-    margin-top: 10px;
     background: url('../assets/img/landscape.png');
 }
 .toolbar__btn .brush{
-    margin-top: 10px;
     background: white url('../assets/img/brush.png');
 }
 .toolbar__btn .elements{
-    margin-top: 10px;
     background: url('../assets/img/elements.png');
 }
 .toolbar__btn .text{
-    margin-top: 10px;
     background: url('../assets/img/text.png');
 }
 .toolbar__btn .contour{
-    margin-top: 10px;
     background: url('../assets/img/contour.png');
 }
 .toolbar__btn .graph{
-    margin-top: 10px;
     background: url('../assets/img/graph.png');
 }

@@ -18,7 +18,7 @@ const Graph = ({edgeI}) => {
         const y = e.target.getStage().getPointerPosition().y;
         setVertices([...vertices,
             {
-                id: vertices.length,
+                id: vertices.length.toString(),
                 x: x,
                 y: y,
                 isDragging: false
@@ -125,7 +125,7 @@ const Graph = ({edgeI}) => {
 
     return (
         <div className="graphCanvas">
-            <Stage width={1075} height={528} onDblClick={addVertex}
+            <Stage width={1500} height={800} onDblClick={addVertex}
                    onMouseDown={handleMouseDown}
                    onMousemove={handleMouseMove}
                    onMouseup={handleMouseUp}>

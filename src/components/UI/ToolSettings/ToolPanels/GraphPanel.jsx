@@ -15,13 +15,17 @@ const GraphPanel = ({change}) => {
               console.log("Edge mode is on")
               break
           }
+          default: {
+              console.log("No such mode")
+              break
+          }
       }
     }
 
     return (
         <div>
-            <button onClick={() => changeMode('edge')}>Edge mode</button>
-            <button onClick={() => changeMode('vertex')}>Vertex mode</button>
+            <ToolSettingsButton onClick={() => changeMode('edge')}>Edge mode</ToolSettingsButton>
+            <ToolSettingsButton onClick={() => changeMode('vertex')}>Vertex mode</ToolSettingsButton>
         </div>
     );
 };

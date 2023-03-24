@@ -2,9 +2,8 @@ import React from 'react';
 
 const TextPanel = () => {
     return (
-        <div>
-            i'm text
-        </div>
+        <input type="text" placeholder="hi i'm text">
+        </input>
     );
 };
 
