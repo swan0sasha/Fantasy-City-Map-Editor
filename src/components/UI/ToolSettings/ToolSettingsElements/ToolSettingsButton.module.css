@@ -1,0 +1,9 @@
+.tsButton{
+    padding: 5px;
+    margin: 5px;
+    color: white;
+    background: slategray;
+    font-size: 14px;
+    border: 1px solid black;
+    cursor: pointer;
+}
