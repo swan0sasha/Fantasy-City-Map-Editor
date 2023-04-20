@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {Stage, Layer, Circle, Line} from 'react-konva';
-import "../styles/Graph.css"
+import "../styles/Canvas.css"
 
-const Graph = ({edgeI}) => {
-    const [edgesInstrument, setEdgesInstrument] = React.useState(false);
-    const isDrawing = React.useRef(false);
+const Graph = ({edgeI, width, height}) => {
+    const [edgesInstrument, setEdgesInstrument] = useState();
+    const isDrawing = useRef(false);
     const [vertices, setVertices] = React.useState(
         []
     );
@@ -137,7 +137,7 @@ const Graph = ({edgeI}) => {
 
     return (
         <div className="graphCanvas">
-            <Stage width={1500} height={800} onDblClick={addVertex}
+            <Stage width={width} height={height} onDblClick={addVertex}
                    onMouseDown={handleMouseDown}
                    onMousemove={handleMouseMove}
                    onMouseup={handleMouseUp}>

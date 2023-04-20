@@ -1,0 +1,27 @@
+.toolPanel {
+    left: 75%;
+    height: 100%;
+    width: 20%;
+    position: absolute;
+    background-color: white;
+}
+
+.toolPanel button {
+    padding: 5px;
+    margin: 5px;
+    color: white;
+    background: slategray;
+    font-size: 14px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.toolPanel button:hover {
+    background-color: white;
+    color: slategray;
+}
+
+.toolPanel button:active {
+    background-color: slategray;
+    color: white;
+}

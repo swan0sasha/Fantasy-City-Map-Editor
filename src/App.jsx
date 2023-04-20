@@ -3,8 +3,7 @@ import {Helmet, HelmetProvider} from "react-helmet-async";
 
 import "./styles/App.css"
 import Toolbar from "./components/Toolbar";
-import ToolSettings from "./components/UI/ToolSettings/ToolSettings";
-import Canvas from "./components/Canvas";
+import MapEditing from "./components/MapEditing"
 
 function App() {
     const [tools, setTools] = useState(
@@ -19,8 +18,6 @@ function App() {
         }
     );
 
-    const [graphMode, setGraphMode] = useState(false);
-
     return (
         <HelmetProvider>
             <Helmet>
@@ -32,8 +29,7 @@ function App() {
             </Helmet>
             <div className="App">
                 <Toolbar change={setTools}/>
-                <ToolSettings tools={tools} change={setGraphMode}/>
-                <Canvas edgeInstr={graphMode}/>
+                <MapEditing tools={tools}/>
             </div>
         </HelmetProvider>
     );

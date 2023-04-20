@@ -1,8 +1,12 @@
 .canvas {
-    top: 50px;
-    left: 50px;
-    height: 800px;
-    width: 1500px;
+    height: 100%;
+    width: 73%;
     position: absolute;
     background-color: white;
+}
+
+.graphCanvas {
+    height: 100%;
+    width: 100%;
+    position: absolute;
 }

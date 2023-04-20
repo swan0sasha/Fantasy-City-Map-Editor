@@ -3,7 +3,7 @@ import React from 'react';
 const ElementsPanel = () => {
     return (
         <div>
-            i'm element
+            i'm elements
         </div>
     );
 };

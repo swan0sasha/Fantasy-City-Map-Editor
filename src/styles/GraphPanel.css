@@ -1,0 +1,8 @@
+.graphPanel {
+    display: grid;
+    justify-content: center;
+}
+
+.graphPanel button:focus {
+    background-color: #5b9191;
+}

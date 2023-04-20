@@ -25,5 +25,5 @@ document.addEventListener(
     }
 );
 root.render(
-    <App />
+    <App/>
 );

@@ -4,6 +4,7 @@
     position: absolute;
     height: 800px;
 }
+
 .toolbar__btn button {
     height: 31px;
     width: 31px;
@@ -16,24 +17,31 @@
     padding: 10px;
     margin-bottom: 10px;
 }
-.toolbar__btn .mouse{
-    background: url('../assets/img/mouse.png');
+
+.toolbar__btn .mouse {
+    background: url('../assets/img_buttons/mouse.png');
 }
-.toolbar__btn .landscape{
-    background: url('../assets/img/landscape.png');
+
+.toolbar__btn .landscape {
+    background: url('../assets/img_buttons/landscape.png');
 }
-.toolbar__btn .brush{
-    background: white url('../assets/img/brush.png');
+
+.toolbar__btn .brush {
+    background: white url('../assets/img_buttons/brush.png');
 }
-.toolbar__btn .elements{
-    background: url('../assets/img/elements.png');
+
+.toolbar__btn .elements {
+    background: url('../assets/img_buttons/elements.png');
 }
-.toolbar__btn .text{
-    background: url('../assets/img/text.png');
+
+.toolbar__btn .text {
+    background: url('../assets/img_buttons/text.png');
 }
-.toolbar__btn .contour{
-    background: url('../assets/img/contour.png');
+
+.toolbar__btn .contour {
+    background: url('../assets/img_buttons/contour.png');
 }
-.toolbar__btn .graph{
-    background: url('../assets/img/graph.png');
+
+.toolbar__btn .graph {
+    background: url('../assets/img_buttons/graph.png');
 }
