@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Graph from "./Graph";
 import "../styles/Canvas.css"
+import Elements from "./Elements";
 
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);
@@ -21,7 +22,8 @@ const Canvas = ({instruments}) => {
 
     return (
         <div className="canvas" ref={ref}>
-            <Graph edgeI={instruments.graph} width={width} height={height}/>
+            {/*<Graph edgeI={instruments.graph} width={width} height={height}/>*/}
+            <Elements width={width} height={height}></Elements>
         </div>
     );
 };
