@@ -34,7 +34,7 @@ const Canvas = ({instruments}) => {
             <Stage width={width} height={height}>
                 {/*<Graph edgeI={instruments.graph} width={width} height={height}/>*/}
                 {/*<Element/>*/}
-                <Elements width={width} height={height}></Elements>
+                {/*<Elements width={width} height={height}></Elements>*/}
             </Stage>
         </div>
     );
