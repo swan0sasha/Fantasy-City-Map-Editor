@@ -10,6 +10,13 @@ import {Stage} from "react-konva";
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
+    const [events, setEvents] = useState(
+        {
+            onDblClick: null,
+            onMouseDown: null,
+            onMousemove: null,
+            onMouseup: null
+        })
     const ref = useRef(null);
     // let coordinates = null;
     useEffect(() => {
@@ -24,15 +31,16 @@ const Canvas = ({instruments}) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // const readCoordinates = () =>{
-    //      coordinates = JSON.parse(dataJson)
-    // }
-    // readCoordinates()
-
     return (
         <div className="canvas" ref={ref}>
-            <Stage width={width} height={height}>
-                {/*<Graph edgeI={instruments.graph} width={width} height={height}/>*/}
+            <Stage width={width}
+                   height={height}
+                   onDblClick={events.onDblClick}
+                   onMouseDown={events.onMouseDown}
+                   onMousemove={events.onMousemove}
+                   onMouseup={events.onMouseup}
+            >
+                <Graph edgeI={instruments.graph} width={width} height={height} eventsHandler = {setEvents}/>
                 {/*<Element/>*/}
                 <Elements width={width} height={height}></Elements>
             </Stage>

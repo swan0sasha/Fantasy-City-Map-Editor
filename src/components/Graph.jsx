@@ -1,8 +1,8 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Stage, Layer, Circle, Line, Group} from 'react-konva';
 import "../styles/Canvas.css"
 
-const Graph = ({edgeI, width, height}) => {
+const Graph = ({edgeI, width, height, eventsHandler}) => {
     const [edgesInstrument, setEdgesInstrument] = useState();
     const isDrawing = useRef(false);
     const [vertices, setVertices] = React.useState(
@@ -11,13 +11,23 @@ const Graph = ({edgeI, width, height}) => {
     const [edges, setEdges] = React.useState(
         []
     );
-    React.useEffect(() => {
+
+    useEffect(() => {
         setEdgesInstrument(edgeI)
     }, [edgeI]);
 
+    useEffect(() => {
+        eventsHandler( {
+            onDblClick: addVertex,
+            onMouseDown: handleMouseDown,
+            onMousemove: handleMouseMove,
+            onMouseup: handleMouseUp,
+        })
+    }, [vertices, edges, edgesInstrument, isDrawing]);
+
     const addVertex = (e) => {
-        const x = e.target.getLayer().getPointerPosition().x;
-        const y = e.target.getLayer().getPointerPosition().y;
+        const x = e.target.getStage().getPointerPosition().x;
+        const y = e.target.getStage().getPointerPosition().y;
         setVertices([...vertices,
             {
                 id: vertices.length.toString(),
@@ -101,7 +111,7 @@ const Graph = ({edgeI, width, height}) => {
     const handleMouseDown = (e) => {
         if (!edgesInstrument) return
         isDrawing.current = true;
-        let pos = e.target.getLayer().getPointerPosition();
+        let pos = e.target.getStage().getPointerPosition();
         let x = pos.x
         let y = pos.y
         if (e.target.getClassName() !== "Circle") {
@@ -124,7 +134,7 @@ const Graph = ({edgeI, width, height}) => {
         if (!isDrawing.current) {
             return;
         }
-        const point = e.target.getLayer().getPointerPosition();
+        const point = e.target.getStage().getPointerPosition();
         setEdges(edges.map((edge, i) => {
             return (i === edges.length - 1
                     ?
@@ -138,11 +148,7 @@ const Graph = ({edgeI, width, height}) => {
     };
 
     return (
-        <Layer onDblClick={addVertex}
-               onMouseDown={handleMouseDown}
-               onMousemove={handleMouseMove}
-               onMouseup={handleMouseUp}
-        >
+        <Layer>
             <Group>
                 {edges.map((edge, i) => (
                     <Line
