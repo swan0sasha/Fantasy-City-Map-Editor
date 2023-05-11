@@ -1,11 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Graph from "./Graph";
-import Element from "./Element";
 import "../styles/Canvas.css"
 import Elements from "./Elements";
 
 import {Stage} from "react-konva";
-// import dataJson from '../recources/buildings.json';
 
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);
@@ -40,8 +38,7 @@ const Canvas = ({instruments}) => {
                    onMousemove={events.onMousemove}
                    onMouseup={events.onMouseup}
             >
-                <Graph edgeI={instruments.graph} width={width} height={height} eventsHandler = {setEvents}/>
-                {/*<Element/>*/}
+                <Graph edgeI={instruments.graph} width={width} height={height} eventsHandler={setEvents}/>
                 <Elements width={width} height={height}></Elements>
             </Stage>
         </div>

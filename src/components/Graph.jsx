@@ -1,5 +1,5 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {Stage, Layer, Circle, Line, Group} from 'react-konva';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
+import {Layer, Circle, Line, Group} from 'react-konva';
 import "../styles/Canvas.css"
 
 const Graph = ({edgeI, width, height, eventsHandler}) => {
@@ -16,16 +16,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
         setEdgesInstrument(edgeI)
     }, [edgeI]);
 
-    useEffect(() => {
-        eventsHandler( {
-            onDblClick: addVertex,
-            onMouseDown: handleMouseDown,
-            onMousemove: handleMouseMove,
-            onMouseup: handleMouseUp,
-        })
-    }, [vertices, edges, edgesInstrument, isDrawing]);
-
-    const addVertex = (e) => {
+    const addVertex = useCallback((e) => {
         const x = e.target.getStage().getPointerPosition().x;
         const y = e.target.getStage().getPointerPosition().y;
         setVertices([...vertices,
@@ -35,11 +26,13 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                 y: y,
                 isDragging: false
             }])
-    }
+    },[vertices]);
+
     const handleDragStart = (e) => {
         const id = e.target.id();
         setVertices(
             vertices.map((vertex) => {
+                // console.log("drag ended")
                 return {
                     ...vertex,
                     isDragging: vertex.id === id,
@@ -63,6 +56,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
         let vertex = vertices.find(vertex => vertex.id === id)
         setEdges(
             edges.map((edge) => {
+                // console.log("drag edge")
                 return {
                     ...edge,
                     ...edge,
@@ -79,6 +73,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
         const y = e.target.y();
         setVertices(
             vertices.map((vertex) => {
+                // console.log("drag ended")
                 return {
                     ...vertex,
                     x: (vertex.id === id ? x : vertex.x),
@@ -89,7 +84,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
         );
     }
 
-    const handleMouseUp = (e) => {
+    const handleMouseUp = useCallback((e) => {
         if (!edgesInstrument) return
         isDrawing.current = false;
         if (e.target.getClassName() !== "Circle") {
@@ -106,9 +101,10 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                 )
             }));
         }
-        console.log("UP")
-    };
-    const handleMouseDown = (e) => {
+        // console.log("UP")
+    }, [addVertex, edges, edgesInstrument]);
+
+    const handleMouseDown = useCallback((e) => {
         if (!edgesInstrument) return
         isDrawing.current = true;
         let pos = e.target.getStage().getPointerPosition();
@@ -126,16 +122,17 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                 end: [x, y]
             }
         ])
-        console.log("DOWN")
-    };
+        // console.log("DOWN")
+    }, [addVertex, edges, edgesInstrument])
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = useCallback((e) => {
         if (!edgesInstrument) return
         if (!isDrawing.current) {
             return;
         }
         const point = e.target.getStage().getPointerPosition();
         setEdges(edges.map((edge, i) => {
+            // console.log("move edge")
             return (i === edges.length - 1
                     ?
                     {
@@ -145,7 +142,16 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                     : edge
             )
         }));
-    };
+    }, [edges, edgesInstrument])
+
+    useEffect(() => {
+        eventsHandler( {
+            onDblClick: addVertex,
+            onMouseDown: handleMouseDown,
+            onMousemove: handleMouseMove,
+            onMouseup: handleMouseUp,
+        })
+    }, [addVertex, handleMouseUp, handleMouseDown, handleMouseMove, eventsHandler]);
 
     return (
         <Layer>

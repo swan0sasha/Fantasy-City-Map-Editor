@@ -10,7 +10,8 @@ import "../styles/ToolPanels.css"
 
 const ToolSettings = ({tools, changeInstruments, instruments}) => {
     const [toolName, setToolName] = useState('mouse')
-    React.useEffect(() => {
+
+    useEffect(() => {
         setToolName(Object.keys(tools).find(key => tools[key] === true))
     }, [tools]);
 

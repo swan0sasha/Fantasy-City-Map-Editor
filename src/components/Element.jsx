@@ -1,6 +1,6 @@
 import React from 'react';
-import {Stage, Layer, Shape, Group} from 'react-konva';
-import coordinates from "../recources/buildings.json";
+import {Layer, Shape, Group} from 'react-konva';
+import coordinates from "../resources/buildings.json";
 
 
 const Element = () => {
