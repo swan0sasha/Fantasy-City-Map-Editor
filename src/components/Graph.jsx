@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Stage, Layer, Circle, Line} from 'react-konva';
+import {Stage, Layer, Circle, Line, Group} from 'react-konva';
 import "../styles/Canvas.css"
 
 const Graph = ({edgeI, width, height}) => {
@@ -16,8 +16,8 @@ const Graph = ({edgeI, width, height}) => {
     }, [edgeI]);
 
     const addVertex = (e) => {
-        const x = e.target.getStage().getPointerPosition().x;
-        const y = e.target.getStage().getPointerPosition().y;
+        const x = e.target.getLayer().getPointerPosition().x;
+        const y = e.target.getLayer().getPointerPosition().y;
         setVertices([...vertices,
             {
                 id: vertices.length.toString(),
@@ -96,11 +96,12 @@ const Graph = ({edgeI, width, height}) => {
                 )
             }));
         }
+        console.log("UP")
     };
     const handleMouseDown = (e) => {
         if (!edgesInstrument) return
         isDrawing.current = true;
-        let pos = e.target.getStage().getPointerPosition();
+        let pos = e.target.getLayer().getPointerPosition();
         let x = pos.x
         let y = pos.y
         if (e.target.getClassName() !== "Circle") {
@@ -115,6 +116,7 @@ const Graph = ({edgeI, width, height}) => {
                 end: [x, y]
             }
         ])
+        console.log("DOWN")
     };
 
     const handleMouseMove = (e) => {
@@ -122,7 +124,7 @@ const Graph = ({edgeI, width, height}) => {
         if (!isDrawing.current) {
             return;
         }
-        const point = e.target.getStage().getPointerPosition();
+        const point = e.target.getLayer().getPointerPosition();
         setEdges(edges.map((edge, i) => {
             return (i === edges.length - 1
                     ?
@@ -136,41 +138,40 @@ const Graph = ({edgeI, width, height}) => {
     };
 
     return (
-        <div className="graphCanvas">
-            <Stage width={width} height={height} onDblClick={addVertex}
-                   onMouseDown={handleMouseDown}
-                   onMousemove={handleMouseMove}
-                   onMouseup={handleMouseUp}>
-                <Layer>
-                    {edges.map((edge, i) => (
-                        <Line
-                            key={i}
-                            points={[edge.start[0], edge.start[1], edge.end[0], edge.end[1]]}
-                            stroke="black"
-                            strokeWidth={2}
-                        />
-                    ))
-                    }
-                </Layer>
-                <Layer>
-                    {vertices.map((vertex) => (
-                        <Circle
-                            key={vertex.id}
-                            id={vertex.id}
-                            x={vertex.x}
-                            y={vertex.y}
-                            radius={3}
-                            fill="black"
-                            draggable={!edgesInstrument}
-                            onDragMove={handleDragMove}
-                            onDragStart={handleDragStart}
-                            onDragEnd={handleDragEnd}
-                        />))
-                    }
-                </Layer>
-            </Stage>
-
-        </div>
+        <Layer onDblClick={addVertex}
+               onMouseDown={handleMouseDown}
+               onMousemove={handleMouseMove}
+               onMouseup={handleMouseUp}
+        >
+            <Group>
+                {edges.map((edge, i) => (
+                    <Line
+                        key={i}
+                        points={[edge.start[0], edge.start[1], edge.end[0], edge.end[1]]}
+                        stroke="black"
+                        strokeWidth={2}
+                    />
+                ))
+                }
+            </Group>
+            <Group>
+                {vertices.map((vertex) => (
+                    <Circle
+                        key={vertex.id}
+                        id={vertex.id}
+                        x={vertex.x}
+                        y={vertex.y}
+                        radius={3}
+                        fill="black"
+                        draggable={!edgesInstrument}
+                        onDragMove={handleDragMove}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        hitStrokeWidth={15}
+                    />))
+                }
+            </Group>
+        </Layer>
     );
 };
 

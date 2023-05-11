@@ -1,12 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Graph from "./Graph";
+import Element from "./Element";
 import "../styles/Canvas.css"
+import {Stage} from "react-konva";
+// import dataJson from '../recources/buildings.json';
 
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
     const ref = useRef(null);
-
+    // let coordinates = null;
     useEffect(() => {
         function handleResize() {
             setWidth(ref.current.offsetWidth);
@@ -19,9 +22,17 @@ const Canvas = ({instruments}) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    // const readCoordinates = () =>{
+    //      coordinates = JSON.parse(dataJson)
+    // }
+    // readCoordinates()
+
     return (
         <div className="canvas" ref={ref}>
-            <Graph edgeI={instruments.graph} width={width} height={height}/>
+            <Stage width={width} height={height}>
+                {/*<Graph edgeI={instruments.graph} width={width} height={height}/>*/}
+                <Element/>
+            </Stage>
         </div>
     );
 };
