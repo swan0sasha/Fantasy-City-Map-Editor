@@ -1,9 +1,10 @@
 import React from 'react';
+import ElementsColorPicker from "../ColorPicker/ElementsColorPicker";
 
 const ElementsPanel = () => {
     return (
         <div>
-            i'm elements
+            <ElementsColorPicker></ElementsColorPicker>
         </div>
     );
 };
