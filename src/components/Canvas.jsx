@@ -2,6 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import Graph from "./Graph";
 import Element from "./Element";
 import "../styles/Canvas.css"
+import Elements from "./Elements";
+
 import {Stage} from "react-konva";
 // import dataJson from '../recources/buildings.json';
 
@@ -31,7 +33,8 @@ const Canvas = ({instruments}) => {
         <div className="canvas" ref={ref}>
             <Stage width={width} height={height}>
                 {/*<Graph edgeI={instruments.graph} width={width} height={height}/>*/}
-                <Element/>
+                {/*<Element/>*/}
+                <Elements width={width} height={height}></Elements>
             </Stage>
         </div>
     );
