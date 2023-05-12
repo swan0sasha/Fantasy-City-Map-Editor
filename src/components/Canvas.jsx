@@ -21,6 +21,7 @@ const Canvas = ({instruments}) => {
         function handleResize() {
             setWidth(ref.current.offsetWidth);
             setHeight(ref.current.offsetHeight);
+            console.log("Holly plz let me fix!")
         }
 
         window.addEventListener("resize", handleResize);
