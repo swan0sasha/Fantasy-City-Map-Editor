@@ -24,7 +24,7 @@ const ToolSettings = ({tools, changeInstruments, instruments}) => {
             case 'brush' :
                 return brushPanel
             case 'elements' :
-                return elementsPanel
+                return elementsPanel({changeInstruments, instruments})
             case 'text' :
                 return textPanel()
             case 'contour' :

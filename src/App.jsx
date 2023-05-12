@@ -14,7 +14,7 @@ function App() {
             elements: false,
             text: false,
             contour: false,
-            graph: false,
+            graph: false
         }
     );
 

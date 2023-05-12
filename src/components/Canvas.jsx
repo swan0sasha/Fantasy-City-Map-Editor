@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Graph from "./Graph";
+import Graph from "./Tools/Graph";
 import "../styles/Canvas.css"
-import Elements from "./Elements";
+import Elements from "./Tools/Elements";
 
 import {Stage} from "react-konva";
 
@@ -35,12 +35,16 @@ const Canvas = ({instruments}) => {
             <Stage width={width}
                    height={height}
                    onDblClick={events.onDblClick}
+                   onMouseup={events.onMouseup}
                    onMouseDown={events.onMouseDown}
                    onMousemove={events.onMousemove}
-                   onMouseup={events.onMouseup}
             >
-                <Graph edgeI={instruments.graph} width={width} height={height} eventsHandler={setEvents}/>
-                <Elements width={width} height={height}></Elements>
+                <Graph mode={instruments.graph}
+                       eventsHandler={setEvents}
+                />
+                <Elements mode={instruments.elements}
+                          eventsHandler={setEvents}
+                />
             </Stage>
         </div>
     );

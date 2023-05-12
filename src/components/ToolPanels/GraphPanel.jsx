@@ -6,15 +6,15 @@ const GraphPanel = ({changeInstruments, instruments}) => {
         switch (mode) {
             case 'vertex' : {
                 changeInstruments({
-                    ...instruments,
-                    graph: false,
+                    ...instruments = false,
+                    graph: 'vertex',
                 })
                 break
             }
             case 'edge' : {
                 changeInstruments({
-                    ...instruments,
-                    graph: true,
+                    ...instruments = false,
+                    graph: 'edge',
                 })
                 break
             }

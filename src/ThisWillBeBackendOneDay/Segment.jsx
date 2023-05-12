@@ -1,4 +1,4 @@
-import Coordinates from "./Coordinates.js";
+import Coordinates from "./Coordinates.jsx";
 
 class Segment {
     constructor(x1, y1, x2, y2) {

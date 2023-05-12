@@ -1,7 +1,7 @@
-import Segment from "./Segment.js";
-import Polygon from "./Polygon.js";
-import Coordinates from "./Coordinates.js";
-import {writeFile} from "fs";
+import Segment from "./Segment.jsx";
+import Polygon from "./Polygon.jsx";
+import Coordinates from "./Coordinates.jsx";
+import writeFile from "browserify-fs";
 
 
 class Quarter {
@@ -32,7 +32,6 @@ class Quarter {
         //this.serializer.serializeBuildings(this.buildings);
         //System.out.println('generated');
     }
-
     generateVerticalWalls() {
         for (const edge of this.borders) {
             if (edge.length() < this.MIN_WALL_LENGTH) {

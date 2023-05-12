@@ -1,20 +1,25 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {Layer, Circle, Line, Group} from 'react-konva';
-import "../styles/Canvas.css"
+import "../../styles/Canvas.css"
 
-const Graph = ({edgeI, width, height, eventsHandler}) => {
-    const [edgesInstrument, setEdgesInstrument] = useState();
+const Graph = ({mode, width, height, eventsHandler}) => {
+    const [graphMode, setGraphMode] = useState();
     const isDrawing = useRef(false);
-    const [vertices, setVertices] = React.useState(
+    // const [isEnabled, setIsEnabled] = useState(false);
+    const [vertices, setVertices] = useState(
         []
     );
-    const [edges, setEdges] = React.useState(
+    const [edges, setEdges] = useState(
         []
     );
 
     useEffect(() => {
-        setEdgesInstrument(edgeI)
-    }, [edgeI]);
+        setGraphMode(mode)
+        // if (mode === undefined || mode === false){
+        //     setIsEnabled(false)
+        // }
+        // else setIsEnabled(true)
+    }, [mode]);
 
     const addVertex = useCallback((e) => {
         const x = e.target.getStage().getPointerPosition().x;
@@ -85,7 +90,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
     }
 
     const handleMouseUp = useCallback((e) => {
-        if (!edgesInstrument) return
+        if (graphMode === "vertex") return
         isDrawing.current = false;
         if (e.target.getClassName() !== "Circle") {
             addVertex(e)
@@ -100,12 +105,12 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                         : edge
                 )
             }));
+            console.log("UP")
         }
-        // console.log("UP")
-    }, [addVertex, edges, edgesInstrument]);
+    }, [addVertex, edges, graphMode]);
 
     const handleMouseDown = useCallback((e) => {
-        if (!edgesInstrument) return
+        if (graphMode === "vertex") return
         isDrawing.current = true;
         let pos = e.target.getStage().getPointerPosition();
         let x = pos.x
@@ -122,11 +127,12 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                 end: [x, y]
             }
         ])
-        // console.log("DOWN")
-    }, [addVertex, edges, edgesInstrument])
+        console.log("DOWN")
+    }, [addVertex, edges, graphMode])
+
 
     const handleMouseMove = useCallback((e) => {
-        if (!edgesInstrument) return
+        if (graphMode === "vertex") return
         if (!isDrawing.current) {
             return;
         }
@@ -142,16 +148,26 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                     : edge
             )
         }));
-    }, [edges, edgesInstrument])
+    }, [edges, graphMode])
 
     useEffect(() => {
-        eventsHandler( {
-            onDblClick: addVertex,
-            onMouseDown: handleMouseDown,
-            onMousemove: handleMouseMove,
-            onMouseup: handleMouseUp,
-        })
-    }, [addVertex, handleMouseUp, handleMouseDown, handleMouseMove, eventsHandler]);
+        if (mode !== undefined && mode !== false) {
+            eventsHandler({
+                onDblClick: addVertex,
+                onMouseup: handleMouseUp,
+                onMouseDown: handleMouseDown,
+                onMousemove: handleMouseMove
+            })
+        }
+        // else {
+        //     eventsHandler({
+        //         onDblClick: null,
+        //         onMouseup: null,
+        //         onMouseDown: null,
+        //         onMousemove: null
+        //     })
+        // }
+    }, [addVertex, handleMouseUp, handleMouseDown, handleMouseMove, eventsHandler, mode]);
 
     return (
         <Layer>
@@ -162,6 +178,7 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                         points={[edge.start[0], edge.start[1], edge.end[0], edge.end[1]]}
                         stroke="black"
                         strokeWidth={2}
+                        hitStrokeWidth={10}
                     />
                 ))
                 }
@@ -175,10 +192,10 @@ const Graph = ({edgeI, width, height, eventsHandler}) => {
                         y={vertex.y}
                         radius={3}
                         fill="black"
-                        draggable={!edgesInstrument}
-                        onDragMove={handleDragMove}
+                        draggable={graphMode === "vertex"}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
+                        onDragMove={handleDragMove}
                         hitStrokeWidth={15}
                     />))
                 }

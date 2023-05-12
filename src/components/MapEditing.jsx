@@ -5,8 +5,7 @@ import "../styles/MapEditing.css"
 
 const MapEditing = ({tools}) => {
     const [instruments, setInstruments] = useState({
-        graph: false,
-        elements: [],
+        tools
     })
     return (
         <div className="mapEditing">
