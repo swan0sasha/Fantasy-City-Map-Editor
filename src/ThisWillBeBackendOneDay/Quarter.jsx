@@ -1,7 +1,7 @@
 import Segment from "./Segment.jsx";
 import Polygon from "./Polygon.jsx";
 import Coordinates from "./Coordinates.jsx";
-import writeFile from "browserify-fs";
+// import writeFile from "browserify-fs";
 
 
 class Quarter {
@@ -23,9 +23,9 @@ class Quarter {
         this.generateHorizontalWalls();
 
         //console.log(JSON.stringify(this.buildings))
-        writeFile('./src/resources/res.json', JSON.stringify(this.buildings), err => {
-            if (err) console.log(err)
-        })
+        // writeFile('./src/resources/res.json', JSON.stringify(this.buildings), err => {
+        //     if (err) console.log(err)
+        // })
         // for (const building of this.buildings) {
         //     console.log(JSON.stringify(building))
         // }
