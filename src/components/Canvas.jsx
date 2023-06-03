@@ -4,6 +4,7 @@ import "../styles/Canvas.css"
 import Elements from "./Tools/Elements";
 
 import {Stage} from "react-konva";
+import Brush from "./Tools/Brush";
 
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);
@@ -39,6 +40,9 @@ const Canvas = ({instruments}) => {
                    onMouseDown={events.onMouseDown}
                    onMousemove={events.onMousemove}
             >
+                <Brush mode={instruments.brush}
+                       eventsHandler={setEvents}
+                />
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}
                 />

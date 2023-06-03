@@ -1,9 +1,10 @@
 import React from 'react';
+import BrushColorPicker from "../ColorPicker/BrushColorPicker";
 
-const BrushPanel = () => {
+const BrushPanel = ({changeInstruments}) => {
     return (
         <div>
-            i'm brush
+            <BrushColorPicker change={changeInstruments}></BrushColorPicker>
         </div>
     );
 };

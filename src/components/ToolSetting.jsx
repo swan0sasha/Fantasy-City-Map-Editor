@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import mousePanel from "./ToolPanels/MousePanel";
 import landscapePanel from "./ToolPanels/LandscapePanel";
 import brushPanel from "./ToolPanels/BrushPanel";
@@ -15,34 +15,34 @@ const ToolSettings = ({tools, changeInstruments, instruments}) => {
         setToolName(Object.keys(tools).find(key => tools[key] === true))
     }, [tools]);
 
-    const choosePanel = useCallback((toolName) => {
-        switch (toolName) {
-            case 'mouse' :
-                return mousePanel
-            case 'landscape' :
-                return landscapePanel
-            case 'brush' :
-                return brushPanel
-            case 'elements' :
-                return elementsPanel({changeInstruments, instruments})
-            case 'text' :
-                return textPanel()
-            case 'contour' :
-                return contourPanel
-            case 'graph' :
-                return graphPanel({changeInstruments, instruments})
-            default : {
-                console.log("No such tool")
-                break
-            }
-        }
-    }, [changeInstruments, instruments])
-
-
     const [tool, setTool] = useState(mousePanel)
     useEffect(() => {
-        setTool(choosePanel(toolName))
-    }, [toolName, choosePanel]);
+        switch (toolName) {
+            case 'mouse' :
+                setTool(mousePanel)
+                break
+            case 'landscape' :
+                setTool(landscapePanel)
+                break
+            case 'brush' :
+                setTool(brushPanel({changeInstruments}))
+                break
+            case 'elements' :
+                setTool(elementsPanel({changeInstruments, instruments}))
+                break
+            case 'text' :
+                setTool(textPanel)
+                break
+            case 'contour' :
+                setTool(contourPanel)
+                break
+            case 'graph' :
+                setTool(graphPanel({changeInstruments, instruments}))
+                break
+            default :
+                setTool(mousePanel)
+        }
+    }, [toolName, changeInstruments, instruments]);
 
     return (
         <div className="toolPanel">

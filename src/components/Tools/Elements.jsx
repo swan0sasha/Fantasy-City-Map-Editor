@@ -22,13 +22,13 @@ const Elements = ({mode, eventsHandler}) => {
     const generateQuarter = useCallback(() => {
         let edges = []
 
-        for (let chosenEdge in chosenEdges){
+        for (let chosenEdge in chosenEdges) {
             edges.push(new Segment(chosenEdge[0], chosenEdge[1], chosenEdge[2], chosenEdge[3]))
         }
 
         let quarter = new Quarter(edges)
         quarter.generateBuildings()
-    },[chosenEdges]);
+    }, [chosenEdges]);
 
     const drawQuarter = (context, shape, element) => {
         context.beginPath();

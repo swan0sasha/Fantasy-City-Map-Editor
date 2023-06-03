@@ -31,7 +31,7 @@ const Graph = ({mode, width, height, eventsHandler}) => {
                 y: y,
                 isDragging: false
             }])
-    },[vertices]);
+    }, [vertices]);
 
     const handleDragStart = (e) => {
         const id = e.target.id();
