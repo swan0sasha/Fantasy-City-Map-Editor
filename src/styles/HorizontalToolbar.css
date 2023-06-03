@@ -1,0 +1,19 @@
+.horizontal-toolbar {
+    width: 100vw;
+    position: absolute;
+    height: 50px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-toolbar__btn button {
+    height: 31px;
+    border: 3px slategray solid;
+    cursor: pointer;
+    margin-left: 9px;
+    display: inline-block;
+    font-size: 14px;
+    padding: 5px;
+    color: #3b3b3b;
+}

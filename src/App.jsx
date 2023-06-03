@@ -4,6 +4,7 @@ import {Helmet, HelmetProvider} from "react-helmet-async";
 import "./styles/App.css"
 import Toolbar from "./components/Toolbar";
 import MapEditing from "./components/MapEditing"
+import HorizontalToolbar from "./components/HorizontalToolbar";
 
 function App() {
     const [tools, setTools] = useState(
@@ -28,6 +29,7 @@ function App() {
                 <meta name="theme-color" content="#008f68"/>
             </Helmet>
             <div className="App">
+                <HorizontalToolbar></HorizontalToolbar>
                 <Toolbar change={setTools}/>
                 <MapEditing tools={tools}/>
             </div>
