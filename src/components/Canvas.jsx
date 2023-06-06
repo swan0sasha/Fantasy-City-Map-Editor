@@ -1,10 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {Stage} from "react-konva";
 import Graph from "./Tools/Graph";
 import "../styles/Canvas.css"
-import Elements from "./Tools/Elements";
-
-import {Stage} from "react-konva";
 import Brush from "./Tools/Brush";
+import Elements from "./Tools/Elements";
 
 const Canvas = ({instruments}) => {
     const [width, setWidth] = useState(null);

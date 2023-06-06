@@ -11,7 +11,7 @@ const Brush = ({mode, eventsHandler}) => {
             points: [offsetX, offsetY],
             color: ((mode !== true && mode !== false && mode !== undefined) ? mode : '#000000')
         }]);
-    }, [lines]);
+    }, [lines, mode]);
     const handleMouseMove = useCallback((event) => {
         if (!isDrawing.current) return;
         const {offsetX, offsetY} = event.evt;
@@ -25,7 +25,7 @@ const Brush = ({mode, eventsHandler}) => {
                     : line
             )
         }))
-    }, [lines]);
+    }, [lines, mode]);
     const handleMouseUp = useCallback((event) => {
         isDrawing.current = false;
     }, [])
