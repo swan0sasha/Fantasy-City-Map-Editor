@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Stage} from "react-konva";
 import Graph from "./Tools/Graph";
 import "../styles/Canvas.css"
 import Brush from "./Tools/Brush";
 import Elements from "./Tools/Elements";
 
-const Canvas = ({instruments}) => {
+const Canvas = ({instruments, htools, changeHtools}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
     const [events, setEvents] = useState(
@@ -30,9 +30,36 @@ const Canvas = ({instruments}) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const stageRef = useRef(null);
+
+    function downloadURI(uri, name) {
+        let link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    const handleExport = useCallback(() => {
+        const uri = stageRef.current.toDataURL();
+        console.log(uri);
+        downloadURI(uri, 'stage.png');
+    }, []);
+    useEffect(() => {
+        if (htools.savePng) {
+            handleExport();
+            changeHtools({
+                ...htools,
+                savePng: false,
+            })
+        }
+    }, [changeHtools, htools, handleExport])
+
     return (
         <div className="canvas" ref={ref}>
-            <Stage width={width}
+            <Stage ref={stageRef}
+                   width={width}
                    height={height}
                    onDblClick={events.onDblClick}
                    onMouseup={events.onMouseup}
@@ -41,6 +68,8 @@ const Canvas = ({instruments}) => {
             >
                 <Brush mode={instruments.brush}
                        eventsHandler={setEvents}
+                       width={width}
+                       height={height}
                 />
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}

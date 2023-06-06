@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Group, Layer, Line} from "react-konva";
+import {Group, Layer, Line, Rect} from "react-konva";
 
-const Brush = ({mode, eventsHandler}) => {
+const Brush = ({mode, eventsHandler, width, height}) => {
     const [lines, setLines] = useState([]);
     const isDrawing = useRef(false);
     const handleMouseDown = useCallback((event) => {
@@ -41,11 +41,18 @@ const Brush = ({mode, eventsHandler}) => {
                 onMousemove: handleMouseMove
             })
         }
-    }, [mode, handleDbl, handleMouseUp, handleMouseDown, handleMouseMove]);
+    }, [mode, handleDbl, handleMouseUp, handleMouseDown, handleMouseMove, eventsHandler]);
 
     return (
         <Layer>
             <Group>
+                <Rect
+                    width={width}
+                    height={height}
+                    fill="white"
+                    x={0}
+                    y={0}
+                />
                 {lines.map((line, i) => (
                     <Line
                         key={i}

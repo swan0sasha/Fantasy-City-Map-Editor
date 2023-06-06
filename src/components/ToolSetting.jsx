@@ -1,46 +1,47 @@
-import React, {useEffect, useState} from "react";
-import mousePanel from "./ToolPanels/MousePanel";
-import landscapePanel from "./ToolPanels/LandscapePanel";
-import brushPanel from "./ToolPanels/BrushPanel";
-import elementsPanel from "./ToolPanels/ElementsPanel";
-import textPanel from "./ToolPanels/TextPanel";
-import contourPanel from "./ToolPanels/ContourPanel";
-import graphPanel from "./ToolPanels/GraphPanel";
-import "../styles/ToolPanels.css"
+import React, { useEffect, useState } from "react";
+import MousePanel from "./ToolPanels/MousePanel";
+import LandscapePanel from "./ToolPanels/LandscapePanel";
+import BrushPanel from "./ToolPanels/BrushPanel";
+import ElementsPanel from "./ToolPanels/ElementsPanel";
+import TextPanel from "./ToolPanels/TextPanel";
+import ContourPanel from "./ToolPanels/ContourPanel";
+import GraphPanel from "./ToolPanels/GraphPanel";
+import "../styles/ToolPanels.css";
 
-const ToolSettings = ({tools, changeInstruments, instruments}) => {
-    const [toolName, setToolName] = useState('mouse')
+const ToolSettings = ({ tools, changeInstruments, instruments }) => {
+    const [toolName, setToolName] = useState('mouse');
 
     useEffect(() => {
-        setToolName(Object.keys(tools).find(key => tools[key] === true))
+        setToolName(Object.keys(tools).find(key => tools[key] === true));
     }, [tools]);
 
-    const [tool, setTool] = useState(mousePanel)
+    const [tool, setTool] = useState(null);
+
     useEffect(() => {
         switch (toolName) {
-            case 'mouse' :
-                setTool(mousePanel)
-                break
-            case 'landscape' :
-                setTool(landscapePanel)
-                break
-            case 'brush' :
-                setTool(brushPanel({changeInstruments}))
-                break
-            case 'elements' :
-                setTool(elementsPanel({changeInstruments, instruments}))
-                break
-            case 'text' :
-                setTool(textPanel)
-                break
-            case 'contour' :
-                setTool(contourPanel)
-                break
-            case 'graph' :
-                setTool(graphPanel({changeInstruments, instruments}))
-                break
-            default :
-                setTool(mousePanel)
+            case 'mouse':
+                setTool(<MousePanel />);
+                break;
+            case 'landscape':
+                setTool(<LandscapePanel />);
+                break;
+            case 'brush':
+                setTool(<BrushPanel changeInstruments={changeInstruments} />);
+                break;
+            case 'elements':
+                setTool(<ElementsPanel changeInstruments={changeInstruments} instruments={instruments} />);
+                break;
+            case 'text':
+                setTool(<TextPanel />);
+                break;
+            case 'contour':
+                setTool(<ContourPanel />);
+                break;
+            case 'graph':
+                setTool(<GraphPanel changeInstruments={changeInstruments} instruments={instruments} />);
+                break;
+            default:
+                setTool(null);
         }
     }, [toolName, changeInstruments, instruments]);
 

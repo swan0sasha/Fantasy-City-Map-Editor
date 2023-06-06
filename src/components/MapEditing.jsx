@@ -3,7 +3,7 @@ import Canvas from "./Canvas";
 import ToolSettings from "./ToolSetting";
 import "../styles/MapEditing.css"
 
-const MapEditing = ({tools}) => {
+const MapEditing = ({tools, htools, changeHtools}) => {
     const [instruments, setInstruments] = useState({
         tools
     })
@@ -12,7 +12,7 @@ const MapEditing = ({tools}) => {
     }, [tools])
     return (
         <div className="mapEditing">
-            <Canvas instruments={instruments}/>
+            <Canvas instruments={instruments} htools = {htools} changeHtools = {changeHtools}/>
             <ToolSettings tools={tools} changeInstruments={setInstruments} instruments={instruments}></ToolSettings>
         </div>
     );

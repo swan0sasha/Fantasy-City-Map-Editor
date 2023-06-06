@@ -18,6 +18,15 @@ function App() {
             graph: false
         }
     );
+    const [horizontalTools, setHorizontalTools] = useState(
+        {
+            savePng: false,
+            saveFile: false,
+            undo: false,
+            redo: false,
+            showGraph: false,
+        }
+    )
 
     return (
         <HelmetProvider>
@@ -29,9 +38,9 @@ function App() {
                 <meta name="theme-color" content="#008f68"/>
             </Helmet>
             <div className="App">
-                <HorizontalToolbar></HorizontalToolbar>
+                <HorizontalToolbar change={setHorizontalTools}></HorizontalToolbar>
                 <Toolbar change={setTools}/>
-                <MapEditing tools={tools}/>
+                <MapEditing tools={tools} htools = {horizontalTools} changeHtools = {setHorizontalTools}/>
             </div>
         </HelmetProvider>
     );
