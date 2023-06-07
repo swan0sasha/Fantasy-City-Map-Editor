@@ -9,7 +9,7 @@ const Canvas = ({instruments, htools, changeHtools}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
 
-    const [userId, setUserId] = useState(1);
+    // const [userId, setUserId] = useState(1);
     const [vertices, setVertices] = useState([]);
     const [edges, setEdges] = useState([]);
     const [texts, setTexts] = useState([]);
@@ -66,13 +66,13 @@ const Canvas = ({instruments, htools, changeHtools}) => {
 
     //get_map from server
     useEffect(() => {
-        const requestOptions = {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({userId: userId})
-        };
+        // const requestOptions = {
+        //     method: 'GET',
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify({userId: userId})
+        // };
 
-        fetch("http://localhost:8000/map", requestOptions)
+        fetch("http://localhost:8000/map")
             .then(response => response.json())
             .then(data => {
                 setVertices(data.vertices)
@@ -80,9 +80,9 @@ const Canvas = ({instruments, htools, changeHtools}) => {
                 setTexts(data.texts)
                 setElements(data.elements)
                 setQuarters(data.quarters)
-                setUserId(1)
+                // setUserId(1)
             });
-    }, [userId]);
+    }, []);
 
     return (
         <div className="canvas" ref={ref}>

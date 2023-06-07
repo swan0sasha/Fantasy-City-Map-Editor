@@ -58,7 +58,6 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
-                            userId: userId,
                             id: vertex.id
                         })
                     };
@@ -112,7 +111,11 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                     const requestOptions = {
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(vertex.userId = userId)
+                        body: JSON.stringify({
+                            id: vertex.id,
+                            x: x,
+                            y: y
+                        })
                     };
 
                     fetch("http://localhost:8000/vertexes/move", requestOptions)
@@ -144,7 +147,6 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                 }));
             }
             console.log("UP")
-
         }
     }, [addVertex, edges, edgesHandler, graphMode]);
 
@@ -160,12 +162,28 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                 x = e.target.attrs.x
                 y = e.target.attrs.y
             }
-            edgesHandler([...edges,
-                {
-                    start: [x, y],
-                    end: [x, y]
-                }
-            ])
+
+            let newEdge = {
+                start: [x, y],
+                end: [x, y]
+            }
+
+            edgesHandler([...edges, newEdge])
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    x: x,
+                    y: y
+                })
+            };
+
+            fetch("http://localhost:8000/edges/add", requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                });
             console.log("DOWN")
 
         }
