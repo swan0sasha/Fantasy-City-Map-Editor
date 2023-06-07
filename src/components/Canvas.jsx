@@ -8,6 +8,14 @@ import Elements from "./Tools/Elements";
 const Canvas = ({instruments, htools, changeHtools}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
+
+    const [userId, setUserId] = useState(1);
+    const [vertices, setVertices] = useState([]);
+    const [edges, setEdges] = useState([]);
+    const [texts, setTexts] = useState([]);
+    const [elements, setElements] = useState([]);
+    const [quarters, setQuarters] = useState([]);
+
     const [events, setEvents] = useState(
         {
             onDblClick: null,
@@ -21,7 +29,6 @@ const Canvas = ({instruments, htools, changeHtools}) => {
         function handleResize() {
             setWidth(ref.current.offsetWidth);
             setHeight(ref.current.offsetHeight);
-            console.log("Holly plz let me fix!")
         }
 
         window.addEventListener("resize", handleResize);
@@ -46,6 +53,7 @@ const Canvas = ({instruments, htools, changeHtools}) => {
         console.log(uri);
         downloadURI(uri, 'stage.png');
     }, []);
+
     useEffect(() => {
         if (htools.savePng) {
             handleExport();
@@ -55,6 +63,26 @@ const Canvas = ({instruments, htools, changeHtools}) => {
             })
         }
     }, [changeHtools, htools, handleExport])
+
+    //get_map from server
+    useEffect(() => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({userId: userId})
+        };
+
+        fetch("http://localhost:8000/map", requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                setVertices(data.vertices)
+                setEdges(data.edges)
+                setTexts(data.texts)
+                setElements(data.elements)
+                setQuarters(data.quarters)
+                setUserId(1)
+            });
+    }, [userId]);
 
     return (
         <div className="canvas" ref={ref}>
@@ -73,6 +101,10 @@ const Canvas = ({instruments, htools, changeHtools}) => {
                 />
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}
+                       vertexes={vertices}
+                       vertexesHandler={setVertices}
+                       edges={edges}
+                       edgesHandler={setEdges}
                 />
                 <Elements mode={instruments.elements}
                           eventsHandler={setEvents}

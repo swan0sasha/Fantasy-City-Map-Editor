@@ -2,16 +2,17 @@ import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {Layer, Circle, Line, Group} from 'react-konva';
 import "../../styles/Canvas.css"
 
-const Graph = ({mode, width, height, eventsHandler}) => {
+const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHandler}) => {
+    const userId = 1
     const [graphMode, setGraphMode] = useState();
     const isDrawing = useRef(false);
     // const [isEnabled, setIsEnabled] = useState(false);
-    const [vertices, setVertices] = useState(
-        []
-    );
-    const [edges, setEdges] = useState(
-        []
-    );
+    // const [vertices, setVertices] = useState(
+    //     []
+    // );
+    // const [edges, setEdges] = useState(
+    //     []
+    // );
 
     useEffect(() => {
         setGraphMode(mode)
@@ -24,24 +25,50 @@ const Graph = ({mode, width, height, eventsHandler}) => {
     const addVertex = useCallback((e) => {
         const x = e.target.getStage().getPointerPosition().x;
         const y = e.target.getStage().getPointerPosition().y;
-        setVertices([...vertices,
-            {
-                id: vertices.length.toString(),
-                x: x,
-                y: y,
-                isDragging: false
-            }])
-    }, [vertices]);
+        let vertex
+        vertex = {
+            x: x,
+            y: y,
+            isDragging: false
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(vertex)
+        };
+
+        fetch("http://localhost:8000/vertexes/add", requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                delete data['response']
+                verticesHandler([...vertices, vertex])
+                console.log(data)
+            });
+    }, [vertices, verticesHandler]);
 
     const handleDragStart = (e) => {
         const id = e.target.id();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
-                // console.log("drag ended")
-                return {
-                    ...vertex,
-                    isDragging: vertex.id === id,
-                };
+                if (vertex.id === id) {
+                    // vertex locked
+                    vertex.isDragging = true
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            userId: userId,
+                            id: vertex.id
+                        })
+                    };
+                    fetch("http://localhost:8000/vertexes/select", requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        });
+                }
+                return vertex;
             })
         );
     }
@@ -49,7 +76,7 @@ const Graph = ({mode, width, height, eventsHandler}) => {
         const id = e.target.id();
         const x = e.target.x();
         const y = e.target.y();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
                 return {
                     ...vertex,
@@ -59,9 +86,8 @@ const Graph = ({mode, width, height, eventsHandler}) => {
             })
         );
         let vertex = vertices.find(vertex => vertex.id === id)
-        setEdges(
+        edgesHandler(
             edges.map((edge) => {
-                // console.log("drag edge")
                 return {
                     ...edge,
                     ...edge,
@@ -70,85 +96,104 @@ const Graph = ({mode, width, height, eventsHandler}) => {
                 };
             })
         );
-
+        // vertex locked
     }
     const handleDragEnd = (e) => {
         const id = e.target.id();
         const x = e.target.x();
         const y = e.target.y();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
-                // console.log("drag ended")
-                return {
-                    ...vertex,
-                    x: (vertex.id === id ? x : vertex.x),
-                    y: (vertex.id === id ? y : vertex.y),
-                    isDragging: false,
-                };
+                if (vertex.id === id) {
+                    // vertex unlocked
+                    vertex.x = x
+                    vertex.y = y
+                    vertex.isDragging = false
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            userId: userId,
+                            id: vertex.id
+                        })
+                    };
+
+                    fetch("http://localhost:8000/vertexes/move", requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        });
+                }
+                return vertex
             })
         );
     }
 
     const handleMouseUp = useCallback((e) => {
-        if (graphMode === "vertex") return
-        isDrawing.current = false;
-        if (e.target.getClassName() !== "Circle") {
-            addVertex(e)
-        } else {
-            setEdges(edges.map((edge, i) => {
+        if (graphMode === "edge") {
+            isDrawing.current = false;
+            if (e.target.getClassName() !== "Circle") {
+                addVertex(e)
+            } else {
+                edgesHandler(edges.map((edge, i) => {
+                    return (i === edges.length - 1
+                            ?
+                            {
+                                ...edge,
+                                end: [e.target.attrs.x, e.target.attrs.y]
+                            }
+                            : edge
+                    )
+                }));
+            }
+            console.log("UP")
+
+        }
+    }, [addVertex, edges, edgesHandler, graphMode]);
+
+    const handleMouseDown = useCallback((e) => {
+        if (graphMode === "edge") {
+            isDrawing.current = true;
+            let pos = e.target.getStage().getPointerPosition();
+            let x = pos.x
+            let y = pos.y
+            if (e.target.getClassName() !== "Circle") {
+                addVertex(e)
+            } else {
+                x = e.target.attrs.x
+                y = e.target.attrs.y
+            }
+            edgesHandler([...edges,
+                {
+                    start: [x, y],
+                    end: [x, y]
+                }
+            ])
+            console.log("DOWN")
+
+        }
+    }, [addVertex, edges, graphMode, edgesHandler])
+
+
+    const handleMouseMove = useCallback((e) => {
+        if (graphMode === "edge") {
+            if (!isDrawing.current) {
+                return;
+            }
+            const point = e.target.getStage().getPointerPosition();
+            console.log(point)
+            edgesHandler(edges.map((edge, i) => {
                 return (i === edges.length - 1
                         ?
                         {
                             ...edge,
-                            end: [e.target.attrs.x, e.target.attrs.y]
+                            end: [point.x, point.y]
                         }
                         : edge
                 )
             }));
-            console.log("UP")
         }
-    }, [addVertex, edges, graphMode]);
-
-    const handleMouseDown = useCallback((e) => {
-        if (graphMode === "vertex") return
-        isDrawing.current = true;
-        let pos = e.target.getStage().getPointerPosition();
-        let x = pos.x
-        let y = pos.y
-        if (e.target.getClassName() !== "Circle") {
-            addVertex(e)
-        } else {
-            x = e.target.attrs.x
-            y = e.target.attrs.y
-        }
-        setEdges([...edges,
-            {
-                start: [x, y],
-                end: [x, y]
-            }
-        ])
-        console.log("DOWN")
-    }, [addVertex, edges, graphMode])
-
-
-    const handleMouseMove = useCallback((e) => {
-        if (graphMode === "vertex") return
-        if (!isDrawing.current) {
-            return;
-        }
-        const point = e.target.getStage().getPointerPosition();
-        setEdges(edges.map((edge, i) => {
-            // console.log("move edge")
-            return (i === edges.length - 1
-                    ?
-                    {
-                        ...edge,
-                        end: [point.x, point.y]
-                    }
-                    : edge
-            )
-        }));
-    }, [edges, graphMode])
+    }, [edges, edgesHandler, graphMode])
 
     useEffect(() => {
         if (mode !== undefined && mode !== false) {
