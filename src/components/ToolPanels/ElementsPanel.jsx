@@ -28,23 +28,23 @@ const ElementsPanel = ({changeInstruments, instruments}) => {
     const changeText = (event) => {
         let value = event.target.value;
         changeInstruments(prevState => {
-          if (!prevState.elements.color){
-              return {
-                  ...prevState,
-                  elements: {
-                      color: "#000000",
-                      number: value,
-                  }
-              }
-          } else{
-              return {
-                  ...prevState,
-                  elements: {
-                      color: prevState.elements.color,
-                      number: value,
-                  }
-              }
-          }
+            if (!prevState.elements.color){
+                return {
+                    ...prevState,
+                    elements: {
+                        color: "#000000",
+                        number: value,
+                    }
+                }
+            } else{
+                return {
+                    ...prevState,
+                    elements: {
+                        color: prevState.elements.color,
+                        number: value,
+                    }
+                }
+            }
         })
     }
 

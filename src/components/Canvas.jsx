@@ -4,8 +4,9 @@ import Graph from "./Tools/Graph";
 import "../styles/Canvas.css"
 import Brush from "./Tools/Brush";
 import Elements from "./Tools/Elements";
+import Landscape from "./Tools/Landscape";
 
-const Canvas = ({instruments, htools, changeHtools}) => {
+const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
     const address = "10.244.204.9"
 
     const [width, setWidth] = useState(null);
@@ -31,6 +32,7 @@ const Canvas = ({instruments, htools, changeHtools}) => {
         function handleResize() {
             setWidth(ref.current.offsetWidth);
             setHeight(ref.current.offsetHeight);
+            // console.log("Holly plz let me fix!")
         }
 
         window.addEventListener("resize", handleResize);
@@ -157,6 +159,9 @@ const Canvas = ({instruments, htools, changeHtools}) => {
                        edges={edges}
                        edgesHandler={setEdges}
                 />
+                <Landscape mode={instruments.landscape}
+                           eventsHandler={setEvents}
+                           changeInstruments={changeInstruments}></Landscape>
                 <Elements mode={instruments.elements}
                           eventsHandler={setEvents}
                 />

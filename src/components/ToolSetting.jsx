@@ -23,7 +23,7 @@ const ToolSettings = ({ tools, changeInstruments, instruments }) => {
                 setTool(<MousePanel />);
                 break;
             case 'landscape':
-                setTool(<LandscapePanel />);
+                setTool(<LandscapePanel changeInstruments={changeInstruments}/>);
                 break;
             case 'brush':
                 setTool(<BrushPanel changeInstruments={changeInstruments} />);
