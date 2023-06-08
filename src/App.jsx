@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Helmet, HelmetProvider} from "react-helmet-async";
 
 import "./styles/App.css"
@@ -7,6 +7,7 @@ import MapEditing from "./components/MapEditing"
 import HorizontalToolbar from "./components/HorizontalToolbar";
 
 function App() {
+    const address = "10.244.204.9"
     const [tools, setTools] = useState(
         {
             mouse: true,

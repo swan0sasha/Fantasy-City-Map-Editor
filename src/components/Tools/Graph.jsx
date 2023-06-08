@@ -2,16 +2,24 @@ import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {Layer, Circle, Line, Group} from 'react-konva';
 import "../../styles/Canvas.css"
 
-const Graph = ({mode, width, height, eventsHandler}) => {
+const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHandler}) => {
+    const address = "10.244.204.9"
     const [graphMode, setGraphMode] = useState();
+    const [currentEdge, setCurrentEdge] = useState(0);
+    const [currentStartId, setCurrentStartId] = useState(0);
+    // const [currentEndId, setCurrentEndId] = useState(0);
+    let currentEndId = 0
+    let newId = 0
+    // const [newId, setNewId] = useState(0);
+
     const isDrawing = useRef(false);
     // const [isEnabled, setIsEnabled] = useState(false);
-    const [vertices, setVertices] = useState(
-        []
-    );
-    const [edges, setEdges] = useState(
-        []
-    );
+    // const [vertices, setVertices] = useState(
+    //     []
+    // );
+    // const [edges, setEdges] = useState(
+    //     []
+    // );
 
     useEffect(() => {
         setGraphMode(mode)
@@ -21,35 +29,76 @@ const Graph = ({mode, width, height, eventsHandler}) => {
         // else setIsEnabled(true)
     }, [mode]);
 
-    const addVertex = useCallback((e) => {
+    const addVertex = useCallback(async(e) => {
         const x = e.target.getStage().getPointerPosition().x;
         const y = e.target.getStage().getPointerPosition().y;
-        setVertices([...vertices,
-            {
-                id: vertices.length.toString(),
-                x: x,
-                y: y,
-                isDragging: false
-            }])
-    }, [vertices]);
+        let vertex
+        vertex = {
+            x: x,
+            y: y,
+            isDragging: false
+        }
 
-    const handleDragStart = (e) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(vertex)
+        };
+
+        let id
+        return await fetch(`http://${address}:8000/vertices/add`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.response === true) {
+                    let newVertex = {
+                        id: data.id,
+                        x: data.x,
+                        y: data.y,
+                        isDragging: false
+                    }
+                    //verticesHandler([...vertices, newVertex])
+                    console.log("before temp:")
+                    console.log(vertices)
+                    let temp = vertices
+                    temp[temp.length] = newVertex
+                    console.log("temp:")
+                    console.log(temp)
+                }
+                delete data['response']
+                id = data.id
+                return id
+            });
+    }, []);
+
+    const handleVertexDragStart = (e) => {
         const id = e.target.id();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
-                // console.log("drag ended")
-                return {
-                    ...vertex,
-                    isDragging: vertex.id === id,
-                };
+                if (vertex.id === id) {
+                    // vertex locked
+                    vertex.isDragging = true
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: vertex.id
+                        })
+                    };
+                    fetch(`http://${address}:8000/vertices/select`, requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        });
+                }
+                return vertex;
             })
         );
     }
-    const handleDragMove = (e) => {
+    const handleVertexDragMove = (e) => {
         const id = e.target.id();
         const x = e.target.x();
         const y = e.target.y();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
                 return {
                     ...vertex,
@@ -59,9 +108,8 @@ const Graph = ({mode, width, height, eventsHandler}) => {
             })
         );
         let vertex = vertices.find(vertex => vertex.id === id)
-        setEdges(
+        edgesHandler(
             edges.map((edge) => {
-                // console.log("drag edge")
                 return {
                     ...edge,
                     ...edge,
@@ -70,93 +118,179 @@ const Graph = ({mode, width, height, eventsHandler}) => {
                 };
             })
         );
-
+        // vertex locked
     }
-    const handleDragEnd = (e) => {
+    const handleVertexDragEnd = (e) => {
         const id = e.target.id();
         const x = e.target.x();
         const y = e.target.y();
-        setVertices(
+        verticesHandler(
             vertices.map((vertex) => {
-                // console.log("drag ended")
-                return {
-                    ...vertex,
-                    x: (vertex.id === id ? x : vertex.x),
-                    y: (vertex.id === id ? y : vertex.y),
-                    isDragging: false,
-                };
+                if (vertex.id === id) {
+                    // vertex unlocked
+                    vertex.x = x
+                    vertex.y = y
+                    vertex.isDragging = false
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: vertex.id,
+                            x: x,
+                            y: y
+                        })
+                    };
+
+                    fetch(`http://${address}:8000/vertices/move`, requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        });
+                }
+                return vertex
             })
         );
     }
 
-    const handleMouseUp = useCallback((e) => {
-        if (graphMode === "vertex") return
-        isDrawing.current = false;
-        if (e.target.getClassName() !== "Circle") {
-            addVertex(e)
-        } else {
-            setEdges(edges.map((edge, i) => {
-                return (i === edges.length - 1
+    const handleEdgeStart = useCallback(async (e) => {
+        if (graphMode === "edge") {
+            isDrawing.current = true;
+            let pos = e.target.getStage().getPointerPosition();
+            let x = pos.x
+            let y = pos.y
+            let startId
+            if (e.target.getClassName() !== "Circle") {
+                startId = await addVertex(e)
+                // setCurrentStartId(newId)
+                // console.log("new start: " + startId)
+            } else {
+                // setCurrentStartId(e.target.id())
+                startId = e.target.id()
+                // console.log("old start: " + startId)
+                x = e.target.attrs.x
+                y = e.target.attrs.y
+            }
+            setCurrentStartId(startId)
+
+            let newEdge = {
+                start: [x, y],
+                startId: startId,
+                endId: "",
+                end: [x, y],
+                isDragging: true
+            }
+
+            let temp = edges
+            temp[temp.length] = newEdge
+            edgesHandler(temp)
+            setCurrentEdge(edges.length - 1)
+
+        }
+    }, [addVertex, edges, graphMode, edgesHandler, currentStartId, newId])
+
+
+    const handleEdgeMove = useCallback((e) => {
+        if (graphMode === "edge") {
+            if (!isDrawing.current) {
+                return;
+            }
+            const point = e.target.getStage().getPointerPosition();
+            // console.log(point)
+            edgesHandler(edges.map((edge, i) => {
+                return (i === currentEdge
                         ?
                         {
                             ...edge,
-                            end: [e.target.attrs.x, e.target.attrs.y]
+                            end: [point.x, point.y]
                         }
                         : edge
                 )
             }));
-            console.log("UP")
         }
-    }, [addVertex, edges, graphMode]);
+    }, [edges, edgesHandler, graphMode, currentEdge])
 
-    const handleMouseDown = useCallback((e) => {
-        if (graphMode === "vertex") return
-        isDrawing.current = true;
-        let pos = e.target.getStage().getPointerPosition();
-        let x = pos.x
-        let y = pos.y
-        if (e.target.getClassName() !== "Circle") {
-            addVertex(e)
-        } else {
-            x = e.target.attrs.x
-            y = e.target.attrs.y
-        }
-        setEdges([...edges,
-            {
-                start: [x, y],
-                end: [x, y]
+
+    const handleEdgeEnd = useCallback(async (e) => {
+        if (graphMode === "edge") {
+            isDrawing.current = false;
+            let endId
+            let coords1
+            let coords2
+
+            for (let i = 0; i < vertices.length; i++) {
+                if (vertices[i].id === currentStartId) {
+                    coords1 = [vertices[i].x, vertices[i].y]
+                }
             }
-        ])
-        console.log("DOWN")
-    }, [addVertex, edges, graphMode])
+            if (e.target.getClassName() !== "Circle") {
+                // endId = await addVertex(e)
+                let pos = e.target.getStage().getPointerPosition()
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id1: currentStartId,
+                        start: coords1,
+                        end: [pos.x, pos.y]
+                    })
+                };
 
+                fetch(`http://${address}:8000/edges/add2`, requestOptions)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    });
+            } else {
+                // setCurrentEndId(e.target.id())
+                endId = e.target.id()
+                // console.log("old end: " + endId)
 
-    const handleMouseMove = useCallback((e) => {
-        if (graphMode === "vertex") return
-        if (!isDrawing.current) {
-            return;
-        }
-        const point = e.target.getStage().getPointerPosition();
-        setEdges(edges.map((edge, i) => {
-            // console.log("move edge")
-            return (i === edges.length - 1
-                    ?
-                    {
-                        ...edge,
-                        end: [point.x, point.y]
+                edgesHandler(edges.map((edge, i) => {
+                    return (i === currentEdge
+                            ?
+                            {
+                                ...edge,
+                                end: [e.target.attrs.x, e.target.attrs.y],
+                                endId: endId,
+                                isDragging: false
+                            }
+                            : edge
+                    )
+                }));
+
+                for (let i = 0; i < vertices.length; i++) {
+                    if (vertices[i].id === endId) {
+                        coords2 = [vertices[i].x, vertices[i].y]
                     }
-                    : edge
-            )
-        }));
-    }, [edges, graphMode])
+                }
+
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id1: currentStartId,
+                        id2: endId,
+                        start: coords1,
+                        end: coords2
+                    })
+                };
+
+                fetch(`http://${address}:8000/edges/add`, requestOptions)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    });
+            }
+        }
+    }, [addVertex, edges, edgesHandler, graphMode, currentEdge, currentStartId, currentEndId, newId]);
 
     useEffect(() => {
         if (mode !== undefined && mode !== false) {
             eventsHandler({
                 onDblClick: addVertex,
-                onMouseup: handleMouseUp,
-                onMouseDown: handleMouseDown,
-                onMousemove: handleMouseMove
+                onMouseup: handleEdgeEnd,
+                onMouseDown: handleEdgeStart,
+                onMousemove: handleEdgeMove
             })
         }
         // else {
@@ -167,14 +301,15 @@ const Graph = ({mode, width, height, eventsHandler}) => {
         //         onMousemove: null
         //     })
         // }
-    }, [addVertex, handleMouseUp, handleMouseDown, handleMouseMove, eventsHandler, mode]);
+    }, [addVertex, handleEdgeEnd, handleEdgeStart, handleEdgeMove, eventsHandler, mode]);
 
     return (
         <Layer>
             <Group>
-                {edges.map((edge, i) => (
+                {edges.map((edge) => (
                     <Line
-                        key={i}
+                        key={edge.id}
+                        id={edge.id}
                         points={[edge.start[0], edge.start[1], edge.end[0], edge.end[1]]}
                         stroke="black"
                         strokeWidth={2}
@@ -193,9 +328,9 @@ const Graph = ({mode, width, height, eventsHandler}) => {
                         radius={3}
                         fill="black"
                         draggable={graphMode === "vertex"}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                        onDragMove={handleDragMove}
+                        onDragStart={handleVertexDragStart}
+                        onDragEnd={handleVertexDragEnd}
+                        onDragMove={handleVertexDragMove}
                         hitStrokeWidth={15}
                     />))
                 }
