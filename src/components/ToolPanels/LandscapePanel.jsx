@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import "../../styles/LandscapePanel.css"
 
-const LandscapePanel = () => {
+const LandscapePanel = ({changeInstruments}) => {
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedForm, setSelectedForm] = useState('');
     const [inputs, setInputs] = useState([
@@ -37,6 +37,12 @@ const LandscapePanel = () => {
 
         setInputs(newInputs);
     };
+    const changeMode = () => {
+        changeInstruments(prevState => ({
+            ...prevState,
+            landscape: "generating",
+        }))
+    }
     return (
         <div className="landscapePanel">
             <div>Enter parameters for city generation</div>
@@ -64,6 +70,8 @@ const LandscapePanel = () => {
                     onChange={(event) => handleInputChange(index, event)}
                 />
             ))}
+            <button onClick={()=>(console.log("generate city"))}>Generate city</button>
+            <button onClick={()=>(changeMode())}>Generate quarter</button>
         </div>
     );
 };

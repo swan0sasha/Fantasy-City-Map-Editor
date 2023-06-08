@@ -4,8 +4,9 @@ import Graph from "./Tools/Graph";
 import "../styles/Canvas.css"
 import Brush from "./Tools/Brush";
 import Elements from "./Tools/Elements";
+import Landscape from "./Tools/Landscape";
 
-const Canvas = ({instruments, htools, changeHtools}) => {
+const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
     const [events, setEvents] = useState(
@@ -74,6 +75,9 @@ const Canvas = ({instruments, htools, changeHtools}) => {
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}
                 />
+                <Landscape mode={instruments.landscape}
+                           eventsHandler={setEvents}
+                           changeInstruments={changeInstruments}></Landscape>
                 <Elements mode={instruments.elements}
                           eventsHandler={setEvents}
                 />

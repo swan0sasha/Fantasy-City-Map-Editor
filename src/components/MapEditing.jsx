@@ -12,7 +12,7 @@ const MapEditing = ({tools, htools, changeHtools}) => {
     }, [tools])
     return (
         <div className="mapEditing">
-            <Canvas instruments={instruments} htools = {htools} changeHtools = {changeHtools}/>
+            <Canvas instruments={instruments} htools = {htools} changeHtools = {changeHtools} changeInstruments={setInstruments}/>
             <ToolSettings tools={tools} changeInstruments={setInstruments} instruments={instruments}></ToolSettings>
         </div>
     );
