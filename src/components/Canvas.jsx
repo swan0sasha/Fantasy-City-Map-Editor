@@ -6,6 +6,8 @@ import Brush from "./Tools/Brush";
 import Elements from "./Tools/Elements";
 
 const Canvas = ({instruments, htools, changeHtools}) => {
+    const address = "10.244.204.9"
+
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
 
@@ -72,17 +74,66 @@ const Canvas = ({instruments, htools, changeHtools}) => {
         //     body: JSON.stringify({userId: userId})
         // };
 
-        fetch("http://localhost:8000/map")
-            .then(response => response.json())
-            .then(data => {
-                setVertices(data.vertices)
-                setEdges(data.edges)
-                setTexts(data.texts)
-                setElements(data.elements)
-                setQuarters(data.quarters)
-                // setUserId(1)
-            });
-    }, []);
+        const interval = setInterval(() => {
+            fetch(`http://10.244.204.9:8000/get_map`)
+                .then(response => response.json())
+                .then(data => {
+                    //vertices
+                    for (let i = 0; i < data.vertices.length; i++) {
+                        data.vertices[i].isDragging = false;
+                    }
+                    for (let i = 0; i < vertices.length; i++){
+                        if (vertices[i].isDragging === true){
+                            let tempId = vertices[i].id
+                            let tempVert = vertices[i]
+                            for (let j = 0; j < data.vertices.length; j++) {
+                                if (data.vertices[j].id === tempId) {
+                                    data.vertices[j] = tempVert
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    setVertices(data.vertices)
+
+                    // data.vertices.map((vertex) => {
+                    //     if (vertex.isDragging !== true){
+                    //         setVertices([...vertices, vertex])
+                    //     }
+                    //     return vertex
+                    // })
+
+                    //edges
+                    for (let i = 0; i < data.edges.length; i++) {
+                        data.edges[i].isDragging = false;
+                    }
+                    for (let i = 0; i < edges.length; i++){
+                        if (edges[i].isDragging === true){
+                            let tempId = edges[i].id
+                            let tempEdge = edges[i]
+                            let bool = false
+                            for (let j = 0; j < data.edges.length; j++) {
+                                if (data.edges[j].id === tempId) {
+                                    data.edges[j] = tempEdge
+                                    bool = true
+                                    break
+                                }
+                            }
+                            if (!bool) {
+                                data.edges.push(edges[i])
+                            }
+                        }
+                    }
+                    setEdges(data.edges)
+                    // console.log(data.edges)
+
+                    setTexts(data.texts)
+                    setElements(data.elements)
+                    setQuarters(data.quarters)
+                });
+        },100);
+        return () => clearInterval(interval);
+    }, [vertices, edges]);
 
     return (
         <div className="canvas" ref={ref}>
@@ -101,8 +152,8 @@ const Canvas = ({instruments, htools, changeHtools}) => {
                 />
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}
-                       vertexes={vertices}
-                       vertexesHandler={setVertices}
+                       vertices={vertices}
+                       verticesHandler={setVertices}
                        edges={edges}
                        edgesHandler={setEdges}
                 />
