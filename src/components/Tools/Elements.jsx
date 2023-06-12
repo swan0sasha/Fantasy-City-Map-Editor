@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Layer} from "react-konva";
 import ElementShape from "./ElementShape";
 
-const Elements = ({mode, eventsHandler}) => {
+const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
     // const [chosenEdges, setChosenEdges] = useState(
     //     []
     // );
@@ -47,12 +47,25 @@ const Elements = ({mode, eventsHandler}) => {
     //         generateQuarter();
     //     }
     // }, [eventsHandler, mode, generateQuarter]);
-    const [elements, setElements] = useState([]);
+    const address = "10.244.204.9"
+    // const [elements, setElements] = useState([]);
     const [selectedId, selectShape] = React.useState(null);
 
     const checkDeselect = (e) => {
         const clickedOnEmpty = e.target === e.target.getStage();
         if (clickedOnEmpty) {
+            const requestOptions = {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: selectedId
+                })
+            };
+            fetch(`http://${address}:8000/objects/deselect`, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                });
             selectShape(null);
         }
     };
@@ -65,23 +78,33 @@ const Elements = ({mode, eventsHandler}) => {
             number = mode.number;
             color = mode.color;
         }
-        setElements((prevElements) => {
+        elementsHandler((prevElements) => {
             const radius = 15;
             let angle = 360 / number;
             let newElement = {
-                vertexes: [],
+                vertices: [],
                 color: color
             };
             for (let i = 0; i < number; i++) {
-                newElement.vertexes = [
-                    ...newElement.vertexes,
+                newElement.vertices = [
+                    ...newElement.vertices,
                     {
                         x: x + radius * Math.cos((i * angle * Math.PI) / 180),
                         y: y + radius * Math.sin((i * angle * Math.PI) / 180)
                     }
                 ];
             }
-            return [...prevElements, newElement];
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newElement)
+            };
+            fetch(`http://${address}:8000/objects/add`, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                });
+            // return [...prevElements, newElement];
         });
     }, [mode]);
 
@@ -105,19 +128,43 @@ const Elements = ({mode, eventsHandler}) => {
 
     return (
         <Layer>
-            {elements.map((element, i) => {
+            {elements.map((element) => {
                 return (
                     <ElementShape
-                        key={i}
+                        key={element.id}
                         element={element}
-                        isSelected={i === selectedId}
+                        isSelected={element.id === selectedId}
                         onSelect={() => {
-                            selectShape(i);
+                            const requestOptions = {
+                                method: 'PUT',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({id: element.id})
+                            };
+                            fetch(`http://${address}:8000/objects/select`, requestOptions)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data)
+                                })
+                                .then(() => selectShape(element.id));
                         }}
                         onChange={(newAttrs) => {
                             const elems = elements.slice();
-                            elems[i] = newAttrs;
-                            setElements(elems);
+                            elems[element.id] = newAttrs;
+                            const requestOptions = {
+                                method: 'PUT',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({
+                                    id: element.id,
+                                    vertices: element.vertices,
+                                    color: element.color
+                                })
+                            };
+                            fetch(`http://${address}:8000/objects/edit`, requestOptions)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data)
+                                })
+                                .then(() => elementsHandler(elems));
                         }}
                         enabled={!!mode}
                     />

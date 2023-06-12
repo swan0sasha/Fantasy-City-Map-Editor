@@ -1,7 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Group, Layer, Line} from "react-konva";
-const Landscape = ({mode, eventsHandler, changeInstruments}) => {
+const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHandler}) => {
+    const address = "10.244.204.9"
     const [chosenEdges, setChosenEdges] = useState([]);
+
     const chooseEdges = useCallback((e) => {
         if (e.target.getClassName() === "Line") {
             setChosenEdges((prevEdges) => ([...prevEdges ,e.target.attrs.points]));
@@ -9,8 +11,32 @@ const Landscape = ({mode, eventsHandler, changeInstruments}) => {
     }, [chosenEdges]);
 
     const generateQuarter = useCallback(() => {
-        //
-        setChosenEdges([]);
+        let borders = []
+        for (let i = 0; i < chosenEdges.length; i++) {
+            let edge = chosenEdges[i]
+            borders.push({
+                start: [edge[0], edge[1]],
+                end: [edge[2], edge[3]]
+            })
+        }
+        let quarter = {
+            color: "poor",
+            borders: borders
+        }
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                quarter: quarter
+            })
+        };
+
+        fetch(`http://${address}:8000/quarters/generate`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+            .then(() => setChosenEdges([]));
     }, [chosenEdges]);
 
     useEffect(() => {
@@ -24,6 +50,7 @@ const Landscape = ({mode, eventsHandler, changeInstruments}) => {
             })
         }
     }, [mode])
+
     useEffect(() => {
 
         if (mode === "generating") {

@@ -15,7 +15,6 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
     // const [userId, setUserId] = useState(1);
     const [vertices, setVertices] = useState([]);
     const [edges, setEdges] = useState([]);
-    const [texts, setTexts] = useState([]);
     const [elements, setElements] = useState([]);
     const [quarters, setQuarters] = useState([]);
 
@@ -84,8 +83,8 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                     for (let i = 0; i < data.vertices.length; i++) {
                         data.vertices[i].isDragging = false;
                     }
-                    for (let i = 0; i < vertices.length; i++){
-                        if (vertices[i].isDragging === true){
+                    for (let i = 0; i < vertices.length; i++) {
+                        if (vertices[i].isDragging === true) {
                             let tempId = vertices[i].id
                             let tempVert = vertices[i]
                             for (let j = 0; j < data.vertices.length; j++) {
@@ -109,8 +108,8 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                     for (let i = 0; i < data.edges.length; i++) {
                         data.edges[i].isDragging = false;
                     }
-                    for (let i = 0; i < edges.length; i++){
-                        if (edges[i].isDragging === true){
+                    for (let i = 0; i < edges.length; i++) {
+                        if (edges[i].isDragging === true) {
                             let tempId = edges[i].id
                             let tempEdge = edges[i]
                             let bool = false
@@ -129,11 +128,11 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                     setEdges(data.edges)
                     // console.log(data.edges)
 
-                    setTexts(data.texts)
+                    // setTexts(data.texts)
                     setElements(data.elements)
                     setQuarters(data.quarters)
                 });
-        },100);
+        }, 100);
         return () => clearInterval(interval);
     }, [vertices, edges]);
 
@@ -161,9 +160,14 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                 />
                 <Landscape mode={instruments.landscape}
                            eventsHandler={setEvents}
-                           changeInstruments={changeInstruments}></Landscape>
+                           changeInstruments={changeInstruments}
+                           quarters={quarters}
+                           quartersHandler={setQuarters}
+                />
                 <Elements mode={instruments.elements}
                           eventsHandler={setEvents}
+                          elements={elements}
+                          elementsHandler={setElements}
                 />
             </Stage>
         </div>

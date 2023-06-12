@@ -7,7 +7,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
 
     React.useEffect(() => {
         if (isSelected) {
-            const vertices = element.vertexes;
+            const vertices = element.vertices;
             const shape = shapeRef.current;
             const tr = trRef.current;
             let minX = vertices[0].x;
@@ -38,13 +38,13 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
             tr.attachTo(shape);
             shape.getLayer().batchDraw();
         }
-    },[isSelected, element.vertexes]);
+    },[isSelected, element.vertices]);
     const drawQuarter = (context, shape, element) => {
         console.log(element)
         context.beginPath();
-        context.moveTo(element.vertexes[0].x, element.vertexes[0].y);
-        for (let i = 1; i < element.vertexes.length; i++) {
-            context.lineTo(element.vertexes[i].x, element.vertexes[i].y);
+        context.moveTo(element.vertices[0].x, element.vertices[0].y);
+        for (let i = 1; i < element.vertices.length; i++) {
+            context.lineTo(element.vertices[i].x, element.vertices[i].y);
         }
         context.closePath();
         context.fillStrokeShape(shape);
@@ -65,7 +65,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                     const newElem =
                         {
                             ...element,
-                            vertexes: element.vertexes.map((vertex) => ({
+                            vertices: element.vertices.map((vertex) => ({
                                 x: vertex.x,
                                 y: vertex.y,
                             }))
@@ -76,13 +76,13 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                     const node = shapeRef.current;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
-                    const newVertexes = element.vertexes.map((vertex) => ({
+                    const newVertices = element.vertices.map((vertex) => ({
                         x: vertex.x * scaleX,
                         y: vertex.y * scaleY,
                     }));
                     const newElem = {
                         ...element,
-                        vertexes: newVertexes,
+                        vertices: newVertices,
                     };
                     node.scaleX(1);
                     node.scaleY(1);
