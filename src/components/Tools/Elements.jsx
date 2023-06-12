@@ -51,12 +51,9 @@ const Elements = ({mode, eventsHandler}) => {
     const [selectedId, selectShape] = React.useState(null);
 
     const checkDeselect = (e) => {
-        const clickedOnEmpty = e.target === e.target.getStage();
-        if (clickedOnEmpty) {
-            selectShape(null);
-        }
     };
     const handleDbl = useCallback((e) => {
+        selectShape(null);
         const x = e.target.getStage().getPointerPosition().x;
         const y = e.target.getStage().getPointerPosition().y;
         let number = 4;
@@ -70,7 +67,8 @@ const Elements = ({mode, eventsHandler}) => {
             let angle = 360 / number;
             let newElement = {
                 vertexes: [],
-                color: color
+                color: color,
+                id: prevElements.length,
             };
             for (let i = 0; i < number; i++) {
                 newElement.vertexes = [
@@ -84,11 +82,27 @@ const Elements = ({mode, eventsHandler}) => {
             return [...prevElements, newElement];
         });
     }, [mode]);
+    const handleKeyDown = useCallback(
+        (e) => {
+            console.log(selectedId)
+            if (e.code === 'Delete' && selectedId !== null) {
+                setElements((prevElements) => {
+                    const updatedElements = prevElements.filter((element) => element.id !== selectedId);
+                    return updatedElements.map((element, index) => ({
+                        ...element,
+                        id: index,
+                    }));
+                });
+                selectShape(null);
+            }
+        },
+        [selectedId]
+    );
 
     const handleMouseUp = useCallback((event) => {
     }, [])
     const handleMouseDown = useCallback((event) => {
-        checkDeselect(event)
+        checkDeselect(event);
     }, []);
     const handleMouseMove = useCallback((event) => {
     }, [])
@@ -99,24 +113,25 @@ const Elements = ({mode, eventsHandler}) => {
                 onMouseUp: handleMouseUp,
                 onMouseDown: handleMouseDown,
                 onMousemove: handleMouseMove,
+                onKeyDown: handleKeyDown,
             })
         }
-    }, [mode, handleMouseUp, handleMouseDown, handleMouseMove, handleDbl, eventsHandler])
+    }, [mode, handleMouseUp, handleMouseDown, handleMouseMove, handleDbl, handleKeyDown,eventsHandler])
 
     return (
         <Layer>
             {elements.map((element, i) => {
                 return (
                     <ElementShape
-                        key={i}
+                        key={element.id}
                         element={element}
-                        isSelected={i === selectedId}
+                        isSelected={element.id === selectedId}
                         onSelect={() => {
-                            selectShape(i);
+                            selectShape(element.id);
                         }}
                         onChange={(newAttrs) => {
                             const elems = elements.slice();
-                            elems[i] = newAttrs;
+                            elems[element.id] = newAttrs;
                             setElements(elems);
                         }}
                         enabled={!!mode}

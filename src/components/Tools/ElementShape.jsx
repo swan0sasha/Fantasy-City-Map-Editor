@@ -38,9 +38,8 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
             tr.attachTo(shape);
             shape.getLayer().batchDraw();
         }
-    },[isSelected, element.vertexes]);
+    }, [isSelected, element.vertexes]);
     const drawQuarter = (context, shape, element) => {
-        console.log(element)
         context.beginPath();
         context.moveTo(element.vertexes[0].x, element.vertexes[0].y);
         for (let i = 1; i < element.vertexes.length; i++) {
@@ -62,34 +61,56 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                 strokeWidth={1}
                 draggable={enabled}
                 onDragEnd={(e) => {
+                    const node = shapeRef.current;
+                    const offsetX = node.x();
+                    const offsetY = node.y();
                     const newElem =
                         {
                             ...element,
                             vertexes: element.vertexes.map((vertex) => ({
-                                x: vertex.x,
-                                y: vertex.y,
+                                x: vertex.x + offsetX,
+                                y: vertex.y + offsetY,
                             }))
                         }
+                    node.x(0)
+                    node.y(0)
                     onChange(newElem);
                 }}
                 onTransformEnd={(e) => {
                     const node = shapeRef.current;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
-                    const newVertexes = element.vertexes.map((vertex) => ({
-                        x: vertex.x * scaleX,
-                        y: vertex.y * scaleY,
-                    }));
+                    const rotation = node.rotation() * (Math.PI / 180); // Преобразование градусов в радианы
+                    const center = {
+                        x: element.vertexes.reduce((sum, vertex) => sum + vertex.x, 0) / element.vertexes.length,
+                        y: element.vertexes.reduce((sum, vertex) => sum + vertex.y, 0) / element.vertexes.length,
+                    };
+                    const newVertexes = element.vertexes.map((vertex) => {
+                        const dx = vertex.x - center.x;
+                        const dy = vertex.y - center.y;
+                        const rotatedX = dx * Math.cos(rotation) - dy * Math.sin(rotation);
+                        const rotatedY = dx * Math.sin(rotation) + dy * Math.cos(rotation);
+                        const scaledX = center.x + rotatedX * scaleX;
+                        const scaledY = center.y + rotatedY * scaleY;
+                        return {
+                            x: scaledX,
+                            y: scaledY,
+                        };
+                    });
                     const newElem = {
                         ...element,
                         vertexes: newVertexes,
                     };
                     node.scaleX(1);
                     node.scaleY(1);
+                    node.x(0);
+                    node.y(0);
+                    node.rotation(0);
                     onChange(newElem);
                 }}
+
             />
-            {isSelected && enabled &&(
+            {isSelected && enabled && (
                 <Transformer
                     ref={trRef}
                     boundBoxFunc={(oldBox, newBox) => {

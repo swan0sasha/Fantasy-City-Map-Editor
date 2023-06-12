@@ -56,6 +56,18 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
             })
         }
     }, [changeHtools, htools, handleExport])
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (events.onKeyDown) {
+                events.onKeyDown(e);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [events.onKeyDown]);
 
     return (
         <div className="canvas" ref={ref}>
