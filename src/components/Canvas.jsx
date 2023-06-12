@@ -76,7 +76,7 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
         // };
 
         const interval = setInterval(() => {
-            fetch(`http://10.244.204.9:8000/get_map`)
+            fetch(`http://${address}:8000/get_map`)
                 .then(response => response.json())
                 .then(data => {
                     //vertices
@@ -129,12 +129,22 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                     // console.log(data.edges)
 
                     // setTexts(data.texts)
-                    setElements(data.elements)
-                    setQuarters(data.quarters)
+
+                    let newElementsArray = []
+                    for (let i = 0; i < data.quarters.length; i++) {
+                        for (let j = 0; j < data.quarters[i].buildings.length; j++) {
+                            newElementsArray.push(data.quarters[i].buildings[j])
+                        }
+                    }
+                    for (let i = 0; i < data.objects.length; i++) {
+                        newElementsArray.push(data.objects[i])
+                    }
+                    setElements(newElementsArray)
+                    // console.log(newElementsArray)
                 });
         }, 100);
         return () => clearInterval(interval);
-    }, [vertices, edges]);
+    }, [vertices, edges, elements]);
 
     return (
         <div className="canvas" ref={ref}>

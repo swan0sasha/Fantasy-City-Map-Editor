@@ -54,18 +54,18 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
     const checkDeselect = (e) => {
         const clickedOnEmpty = e.target === e.target.getStage();
         if (clickedOnEmpty) {
-            const requestOptions = {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    id: selectedId
-                })
-            };
-            fetch(`http://${address}:8000/objects/deselect`, requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                });
+            // const requestOptions = {
+            //     method: 'PUT',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         id: selectedId
+            //     })
+            // };
+            // fetch(`http://${address}:8000/objects/deselect`, requestOptions)
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         console.log(data)
+            //     });
             selectShape(null);
         }
     };
@@ -78,7 +78,7 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
             number = mode.number;
             color = mode.color;
         }
-        elementsHandler((prevElements) => {
+        // elementsHandler((prevElements) => {
             const radius = 15;
             let angle = 360 / number;
             let newElement = {
@@ -105,7 +105,7 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
                     console.log(data)
                 });
             // return [...prevElements, newElement];
-        });
+        // });
     }, [mode]);
 
     const handleMouseUp = useCallback((event) => {
@@ -129,42 +129,31 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
     return (
         <Layer>
             {elements.map((element) => {
+                // console.log(elements);
+                // console.log(element)
                 return (
                     <ElementShape
                         key={element.id}
                         element={element}
                         isSelected={element.id === selectedId}
                         onSelect={() => {
-                            const requestOptions = {
-                                method: 'PUT',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({id: element.id})
-                            };
-                            fetch(`http://${address}:8000/objects/select`, requestOptions)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data)
-                                })
-                                .then(() => selectShape(element.id));
+                            // const requestOptions = {
+                            //     method: 'PUT',
+                            //     headers: {'Content-Type': 'application/json'},
+                            //     body: JSON.stringify({id: element.id})
+                            // };
+                            // fetch(`http://${address}:8000/objects/select`, requestOptions)
+                            //     .then(response => response.json())
+                            //     .then(data => {
+                            //         console.log(data)
+                            //     })
+                            //     .then(() => );
+                            selectShape(element.id)
                         }}
                         onChange={(newAttrs) => {
                             const elems = elements.slice();
                             elems[element.id] = newAttrs;
-                            const requestOptions = {
-                                method: 'PUT',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({
-                                    id: element.id,
-                                    vertices: element.vertices,
-                                    color: element.color
-                                })
-                            };
-                            fetch(`http://${address}:8000/objects/edit`, requestOptions)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data)
-                                })
-                                .then(() => elementsHandler(elems));
+                            // elementsHandler(elems)
                         }}
                         enabled={!!mode}
                     />

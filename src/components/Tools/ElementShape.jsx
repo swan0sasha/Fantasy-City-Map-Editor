@@ -4,6 +4,7 @@ import {Shape, Transformer} from "react-konva";
 const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
     const shapeRef = React.useRef();
     const trRef = React.useRef();
+    const address = "10.244.204.9"
 
     React.useEffect(() => {
         if (isSelected) {
@@ -35,12 +36,14 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                 };
             };
 
-            tr.attachTo(shape);
-            shape.getLayer().batchDraw();
+            if (enabled === true){
+                tr.attachTo(shape);
+                shape.getLayer().batchDraw();
+            }
         }
     },[isSelected, element.vertices]);
     const drawQuarter = (context, shape, element) => {
-        console.log(element)
+        // console.log(element[0])
         context.beginPath();
         context.moveTo(element.vertices[0].x, element.vertices[0].y);
         for (let i = 1; i < element.vertices.length; i++) {
@@ -62,14 +65,33 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                 strokeWidth={1}
                 draggable={enabled}
                 onDragEnd={(e) => {
+                    const node = shapeRef.current;
+                    const offsetX = node.x()
+                    const offsetY = node.y()
+                    const newVertices = element.vertices.map((vertex) => ({
+                        x: vertex.x + offsetX,
+                        y: vertex.y + offsetY,
+                    }))
+                    console.log(element)
                     const newElem =
                         {
                             ...element,
-                            vertices: element.vertices.map((vertex) => ({
-                                x: vertex.x,
-                                y: vertex.y,
-                            }))
+                            vertices: newVertices
                         }
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: element.id,
+                            vertices: newVertices,
+                            color: element.color
+                        })
+                    };
+                    fetch(`http://${address}:8000/objects/edit`, requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
                     onChange(newElem);
                 }}
                 onTransformEnd={(e) => {
@@ -86,6 +108,20 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                     };
                     node.scaleX(1);
                     node.scaleY(1);
+                    const requestOptions = {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: element.id,
+                            vertices: newVertices,
+                            color: element.color
+                        })
+                    };
+                    fetch(`http://${address}:8000/objects/edit`, requestOptions)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
                     onChange(newElem);
                 }}
             />

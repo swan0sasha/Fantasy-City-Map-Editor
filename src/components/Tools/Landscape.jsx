@@ -8,19 +8,64 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
         if (e.target.getClassName() === "Line") {
             setChosenEdges((prevEdges) => ([...prevEdges ,e.target.attrs.points]));
         }
-    }, [chosenEdges]);
+    }, []);
+
 
     const generateQuarter = useCallback(() => {
+
+        let pointSet = new Set()
+        const points = chosenEdges.reduce((acc, edge) => {
+            acc.add(JSON.stringify({x: edge[0], y:edge[1]}));
+            acc.add(JSON.stringify({x: edge[2], y:edge[3]}))
+            // console.log(edge)
+            return acc;
+        }, pointSet);
+
+        const pointArray = [...points]
+        const formattedSet = pointArray.map((item) => {
+            if (typeof item === 'string') return JSON.parse(item);
+            else if (typeof item === 'object') return item;
+        });
+        console.log(formattedSet)
+
+        // Get the center (mean value) using reduce
+        const center = formattedSet.reduce((acc, {x, y}) => {
+            console.log(x)
+            console.log(y)
+            acc.x += x / formattedSet.length;
+            acc.y += y / formattedSet.length;
+            return acc;
+        }, { x: 0, y: 0 });
+        console.log("Center " + JSON.stringify(center))
+
+        // Add an angle property to each point using tan(angle) = y/x
+        const angles = formattedSet.map(({ x, y }) => {
+            return { x, y, angle: Math.atan2(y - center.y, x - center.x) * 180 / Math.PI };
+        });
+
+        // Sort your points by angle
+        const pointsSorted = angles.sort((a, b) => a.angle - b.angle);
         let borders = []
-        for (let i = 0; i < chosenEdges.length; i++) {
-            let edge = chosenEdges[i]
+
+        console.log("Before " + chosenEdges)
+        for (let i = 0; i < pointsSorted.length - 1; i++) {
+            let start = pointsSorted[i]
+            let end = pointsSorted[i+1]
             borders.push({
-                start: [edge[0], edge[1]],
-                end: [edge[2], edge[3]]
+                start: [start.x, start.y],
+                end: [end.x, end.y]
             })
         }
+        let start = pointsSorted[pointsSorted.length - 1]
+        let end = pointsSorted[0]
+        borders.push({
+            start: [start.x, start.y],
+            end: [end.x, end.y]
+        })
+        console.log("After " + borders)
+
         let quarter = {
-            color: "poor",
+            color: "yellow",
             borders: borders
         }
         const requestOptions = {
@@ -40,7 +85,7 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
     }, [chosenEdges]);
 
     useEffect(() => {
-        console.log(mode)
+        // console.log(mode)
         if (mode !== undefined && mode !== false) {
             eventsHandler({
                 onDblClick: null,
@@ -49,7 +94,7 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
                 onMousemove: null
             })
         }
-    }, [mode])
+    }, [mode, chooseEdges, eventsHandler])
 
     useEffect(() => {
 
@@ -60,7 +105,7 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
                 landscape: true,
             }))
         }
-    }, [mode, generateQuarter, chosenEdges]);
+    }, [mode, generateQuarter, chosenEdges, changeInstruments]);
     return (
         <Layer>
             <Group>

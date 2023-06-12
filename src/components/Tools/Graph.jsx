@@ -57,12 +57,12 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                         isDragging: false
                     }
                     //verticesHandler([...vertices, newVertex])
-                    console.log("before temp:")
-                    console.log(vertices)
+                    // console.log("before temp:")
+                    // console.log(vertices)
                     let temp = vertices
                     temp[temp.length] = newVertex
-                    console.log("temp:")
-                    console.log(temp)
+                    // console.log("temp:")
+                    // console.log(temp)
                 }
                 delete data['response']
                 id = data.id
