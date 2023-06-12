@@ -73,7 +73,7 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
         const x = e.target.getStage().getPointerPosition().x;
         const y = e.target.getStage().getPointerPosition().y;
         let number = 4;
-        let color = "#000000";
+        let color = "#F8E71C";
         if (mode !== true && mode !== undefined && mode !== null) {
             number = mode.number;
             color = mode.color;

@@ -36,21 +36,25 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                 };
             };
 
-            if (enabled === true){
+            if (enabled === true) {
                 tr.attachTo(shape);
                 shape.getLayer().batchDraw();
             }
         }
-    },[isSelected, element.vertices]);
+    }, [isSelected, element.vertices]);
     const drawQuarter = (context, shape, element) => {
-        // console.log(element[0])
-        context.beginPath();
-        context.moveTo(element.vertices[0].x, element.vertices[0].y);
-        for (let i = 1; i < element.vertices.length; i++) {
-            context.lineTo(element.vertices[i].x, element.vertices[i].y);
+        console.log(element)
+        if (element.vertices !== [] && element.vertices !== undefined) {
+            context.beginPath();
+            // console.log(element.vertices[0])
+            if (element.vertices[0] === undefined || element.vertices[0] === undefined) return
+            context.moveTo(element.vertices[0].x, element.vertices[0].y);
+            for (let i = 1; i < element.vertices.length; i++) {
+                context.lineTo(element.vertices[i].x, element.vertices[i].y);
+            }
+            context.closePath();
+            context.fillStrokeShape(shape);
         }
-        context.closePath();
-        context.fillStrokeShape(shape);
     };
 
     return (
@@ -72,7 +76,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                         x: vertex.x + offsetX,
                         y: vertex.y + offsetY,
                     }))
-                    console.log(element)
+                    // console.log(element)
                     const newElem =
                         {
                             ...element,
@@ -125,7 +129,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                     onChange(newElem);
                 }}
             />
-            {isSelected && enabled &&(
+            {isSelected && enabled && (
                 <Transformer
                     ref={trRef}
                     boundBoxFunc={(oldBox, newBox) => {

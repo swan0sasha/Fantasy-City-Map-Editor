@@ -126,9 +126,6 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                         }
                     }
                     setEdges(data.edges)
-                    // console.log(data.edges)
-
-                    // setTexts(data.texts)
 
                     let newElementsArray = []
                     for (let i = 0; i < data.quarters.length; i++) {
@@ -140,7 +137,6 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                         newElementsArray.push(data.objects[i])
                     }
                     setElements(newElementsArray)
-                    // console.log(newElementsArray)
                 });
         }, 100);
         return () => clearInterval(interval);

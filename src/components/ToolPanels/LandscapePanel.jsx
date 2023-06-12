@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import "../../styles/LandscapePanel.css"
 
 const LandscapePanel = ({changeInstruments}) => {
+    const address = "10.244.204.9"
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedForm, setSelectedForm] = useState('');
     const [inputs, setInputs] = useState([
@@ -10,15 +11,27 @@ const LandscapePanel = ({changeInstruments}) => {
         {value: '', type: "Park"},
         {value: '', type: "Market"},
         {value: '', type: "Square"},
-        {value: '', type: "Industrial"}
+        {value: '', type: "Industrial"},
+        {value: '', type: "Rich"}
     ]);
 
 
     const handleSelectSizeChange = (event) => {
-        setSelectedSize(event.target.value);
+        if (event.target.value !== null){
+            setSelectedSize(event.target.value);
+        }
+        else {
+            setSelectedSize('small')
+        }
+
     };
     const handleSelectFormChange = (event) => {
-        setSelectedForm(event.target.value);
+        if (event.target.value !== null){
+            setSelectedForm(event.target.value);
+        }
+        else {
+            setSelectedForm('square');
+        }
     };
     const handleInputChange = (index, event) => {
         const newInputs = [...inputs];
@@ -43,6 +56,52 @@ const LandscapePanel = ({changeInstruments}) => {
             landscape: "generating",
         }))
     }
+
+    const generateCity = () => {
+        let size
+        switch (selectedSize) {
+            case 'small':
+                size = 200
+                break
+            case 'middle':
+                size = 400
+                break
+            case 'big':
+                size = 600
+                break
+            default:
+                size = 200
+                break
+        }
+
+        console.log(selectedSize)
+        console.log(selectedForm)
+        console.log(inputs)
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                shape: selectedForm,
+                start: [400, 400],
+                sideLength: size,
+                coloring:{
+                    park: inputs[2].value,
+                    poor: inputs[0].value,
+                    middle:inputs[1].value,
+                    industrial:inputs[4].value,
+                    market:inputs[3].value,
+                    square:inputs[5].value,
+                    rich:inputs[6].value
+                }
+            })
+        };
+        fetch(`http://${address}:8000/generate`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+    }
+
     return (
         <div className="landscapePanel">
             <div>Enter parameters for city generation</div>
@@ -53,7 +112,6 @@ const LandscapePanel = ({changeInstruments}) => {
             </select>
             <select value={selectedForm} onChange={handleSelectFormChange}>
                 <option value="square">Square</option>
-                <option value="circle">Circle</option>
                 <option value="rhombus">Rhombus</option>
                 <option value="cross">Cross</option>
             </select>
@@ -70,8 +128,8 @@ const LandscapePanel = ({changeInstruments}) => {
                     onChange={(event) => handleInputChange(index, event)}
                 />
             ))}
-            <button onClick={()=>(console.log("generate city"))}>Generate city</button>
-            <button onClick={()=>(changeMode())}>Generate quarter</button>
+            <button onClick={() => generateCity()}>Generate city</button>
+            <button onClick={() => changeMode()}>Generate quarter</button>
         </div>
     );
 };
