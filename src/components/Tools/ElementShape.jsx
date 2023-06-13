@@ -104,6 +104,8 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                             ...element,
                             vertices: newVertices
                         }
+                    node.x(0)
+                    node.y(0)
                     const requestOptions = {
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
@@ -118,22 +120,38 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                         .then(data => {
                             console.log(data)
                         })
-                    onChange(element);
+                    onChange(newElem);
                 }}
                 onTransformEnd={(e) => {
                     const node = shapeRef.current;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
-                    const newVertices = element.vertices.map((vertex) => ({
-                        x: vertex.x * scaleX,
-                        y: vertex.y * scaleY,
-                    }));
+                    const rotation = node.rotation() * (Math.PI / 180); // Преобразование градусов в радианы
+                    const center = {
+                        x: element.vertices.reduce((sum, vertex) => sum + vertex.x, 0) / element.vertices.length,
+                        y: element.vertices.reduce((sum, vertex) => sum + vertex.y, 0) / element.vertices.length,
+                    };
+                    const newVertices = element.vertices.map((vertex) => {
+                        const dx = vertex.x - center.x;
+                        const dy = vertex.y - center.y;
+                        const rotatedX = dx * Math.cos(rotation) - dy * Math.sin(rotation);
+                        const rotatedY = dx * Math.sin(rotation) + dy * Math.cos(rotation);
+                        const scaledX = center.x + rotatedX * scaleX;
+                        const scaledY = center.y + rotatedY * scaleY;
+                        return {
+                            x: scaledX,
+                            y: scaledY,
+                        };
+                    });
                     const newElem = {
                         ...element,
                         vertices: newVertices,
                     };
                     node.scaleX(1);
                     node.scaleY(1);
+                    node.x(0);
+                    node.y(0);
+                    node.rotation(0);
                     const requestOptions = {
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
