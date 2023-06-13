@@ -157,6 +157,11 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                        width={width}
                        height={height}
                 />
+                <Elements mode={instruments.elements}
+                          eventsHandler={setEvents}
+                          elements={elements}
+                          elementsHandler={setElements}
+                />
                 <Graph mode={instruments.graph}
                        eventsHandler={setEvents}
                        vertices={vertices}
@@ -171,11 +176,6 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                            quartersHandler={setQuarters}
                            edges={edges}
                            vertices={vertices}
-                />
-                <Elements mode={instruments.elements}
-                          eventsHandler={setEvents}
-                          elements={elements}
-                          elementsHandler={setElements}
                 />
             </Stage>
         </div>

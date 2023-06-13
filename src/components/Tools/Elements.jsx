@@ -4,6 +4,7 @@ import ElementShape from "./ElementShape";
 
 const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
     const address = "10.244.204.9"
+    let newIdCounter = 0
     // const [elements, setElements] = useState([]);
     const [selectedId, selectShape] = React.useState(null);
 
@@ -23,34 +24,43 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
             color = mode.color;
         }
         // elementsHandler((prevElements) => {
-            const radius = 15;
-            let angle = 360 / number;
-            let newElement = {
-                vertices: [],
-                color: color
-            };
-            for (let i = 0; i < number; i++) {
-                newElement.vertices = [
-                    ...newElement.vertices,
-                    {
-                        x: x + radius * Math.cos((i * angle * Math.PI) / 180),
-                        y: y + radius * Math.sin((i * angle * Math.PI) / 180)
-                    }
-                ];
-            }
-            const requestOptions = {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(newElement)
-            };
-            fetch(`http://${address}:8000/objects/add`, requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                });
-            // return [...prevElements, newElement];
+        const radius = 15;
+        let angle = 360 / number;
+        let newElement = {
+            vertices: [],
+            color: color
+        };
+        for (let i = 0; i < number; i++) {
+            newElement.vertices = [
+                ...newElement.vertices,
+                {
+                    x: x + radius * Math.cos((i * angle * Math.PI) / 180),
+                    y: y + radius * Math.sin((i * angle * Math.PI) / 180)
+                }
+            ];
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newElement)
+        };
+        fetch(`http://${address}:8000/objects/add`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            });
+        // return [...prevElements, newElement];
         // });
     }, [mode]);
+
+    const idHandler = (id) => {
+        if (id === null){
+            let newId = newIdCounter
+            newIdCounter++
+            return newId
+        }
+        return id
+    }
 
     const handleMouseUp = useCallback((event) => {
     }, [])

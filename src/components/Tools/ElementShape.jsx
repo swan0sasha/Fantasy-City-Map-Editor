@@ -81,6 +81,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
     return (
         <React.Fragment>
             <Shape
+                key={element.id}
                 sceneFunc={(context, shape) => drawQuarter(context, shape, element)}
                 onClick={onSelect}
                 onTap={onSelect}
@@ -117,7 +118,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                         .then(data => {
                             console.log(data)
                         })
-                    onChange(newElem);
+                    onChange(element);
                 }}
                 onTransformEnd={(e) => {
                     const node = shapeRef.current;

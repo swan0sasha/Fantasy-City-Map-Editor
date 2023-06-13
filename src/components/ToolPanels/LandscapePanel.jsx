@@ -3,8 +3,8 @@ import "../../styles/LandscapePanel.css"
 
 const LandscapePanel = ({changeInstruments}) => {
     const address = "10.244.204.9"
-    const [selectedSize, setSelectedSize] = useState('');
-    const [selectedForm, setSelectedForm] = useState('');
+    const [selectedSize, setSelectedSize] = useState('small');
+    const [selectedForm, setSelectedForm] = useState('square');
     const [inputs, setInputs] = useState([
         {value: '0', type: "Poor"},
         {value: '1', type: "Middle"},
@@ -86,10 +86,10 @@ const LandscapePanel = ({changeInstruments}) => {
                 startCords = [400, 200]
                 break
             case 'rhombus':
-                startCords = [400, 500]
+                startCords = [400, 400]
                 break
             case 'cross':
-                startCords = [400, 600]
+                startCords = [500, 500]
                 break
             default:
                 startCords = [400, 400]
