@@ -42,8 +42,29 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
             }
         }
     }, [isSelected, element.vertices]);
+
+    const colorChecker = (color) => {
+        switch (color) {
+            case "poor":
+                return "brown"
+            case "park":
+                return "green"
+            case "middle":
+                return "yellow"
+            case "industrial":
+                return "orange"
+            case "market":
+                return "blue"
+            case "square":
+                return "red"
+            case "rich":
+                return "purple"
+            default:
+                return color
+        }
+    }
     const drawQuarter = (context, shape, element) => {
-        console.log(element)
+        // console.log(element)
         if (element.vertices !== [] && element.vertices !== undefined) {
             context.beginPath();
             // console.log(element.vertices[0])
@@ -64,7 +85,7 @@ const ElementShape = ({isSelected, onSelect, onChange, element, enabled}) => {
                 onClick={onSelect}
                 onTap={onSelect}
                 ref={shapeRef}
-                fill={element.color}
+                fill={colorChecker(element.color)}
                 stroke="black"
                 strokeWidth={1}
                 draggable={enabled}

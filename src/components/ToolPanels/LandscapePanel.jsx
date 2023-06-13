@@ -6,30 +6,28 @@ const LandscapePanel = ({changeInstruments}) => {
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedForm, setSelectedForm] = useState('');
     const [inputs, setInputs] = useState([
-        {value: '', type: "Poor"},
-        {value: '', type: "Middle"},
-        {value: '', type: "Park"},
-        {value: '', type: "Market"},
-        {value: '', type: "Square"},
-        {value: '', type: "Industrial"},
-        {value: '', type: "Rich"}
+        {value: '0', type: "Poor"},
+        {value: '1', type: "Middle"},
+        {value: '0', type: "Park"},
+        {value: '0', type: "Market"},
+        {value: '0', type: "Square"},
+        {value: '0', type: "Industrial"},
+        {value: '0', type: "Rich"}
     ]);
 
 
     const handleSelectSizeChange = (event) => {
-        if (event.target.value !== null){
+        if (event.target.value !== null) {
             setSelectedSize(event.target.value);
-        }
-        else {
+        } else {
             setSelectedSize('small')
         }
 
     };
     const handleSelectFormChange = (event) => {
-        if (event.target.value !== null){
+        if (event.target.value !== null) {
             setSelectedForm(event.target.value);
-        }
-        else {
+        } else {
             setSelectedForm('square');
         }
     };
@@ -57,6 +55,15 @@ const LandscapePanel = ({changeInstruments}) => {
         }))
     }
 
+    // const setEquals = () => {
+    //     inputs.map((input, index) => (
+    //         <input
+    //             key={index}
+    //             value={0.142}
+    //             onChange={(event) => handleInputChange(index, event)}
+    //         />
+    //     ))
+    // }
     const generateCity = () => {
         let size
         switch (selectedSize) {
@@ -73,25 +80,41 @@ const LandscapePanel = ({changeInstruments}) => {
                 size = 200
                 break
         }
-
+        let startCords = []
+        switch (selectedForm) {
+            case 'square':
+                startCords = [400, 200]
+                break
+            case 'rhombus':
+                startCords = [400, 500]
+                break
+            case 'cross':
+                startCords = [400, 600]
+                break
+            default:
+                startCords = [400, 400]
+                break
+        }
+        console.log("Size:")
         console.log(selectedSize)
+        console.log("Form:")
         console.log(selectedForm)
-        console.log(inputs)
+        // console.log(inputs)
         const requestOptions = {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 shape: selectedForm,
-                start: [400, 400],
+                start: startCords,
                 sideLength: size,
-                coloring:{
+                coloring: {
                     park: inputs[2].value,
                     poor: inputs[0].value,
-                    middle:inputs[1].value,
-                    industrial:inputs[4].value,
-                    market:inputs[3].value,
-                    square:inputs[5].value,
-                    rich:inputs[6].value
+                    middle: inputs[1].value,
+                    industrial: inputs[4].value,
+                    market: inputs[3].value,
+                    square: inputs[5].value,
+                    rich: inputs[6].value
                 }
             })
         };
@@ -116,6 +139,7 @@ const LandscapePanel = ({changeInstruments}) => {
                 <option value="cross">Cross</option>
             </select>
             <div>Priorities</div>
+            {/*<button onClick={() => setEquals()}>Set equal</button>*/}
             {inputs.map((input, index) => (
                 <input
                     key={index}

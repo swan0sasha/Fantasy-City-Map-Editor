@@ -1,21 +1,30 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Group, Layer, Line} from "react-konva";
 
-const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHandler}) => {
+const Landscape = ({mode, eventsHandler, changeInstruments, edges, vertices}) => {
     const address = "10.244.204.9"
-    const [chosenEdges, setChosenEdges] = useState([]);
+    const [chosenEdgesID, setChosenEdgesID] = useState([]);
+    const [chosenEdgesCords, setChosenEdgesCords] = useState([]);
 
+    // console.log(edges)
     const chooseEdges = useCallback((e) => {
         if (e.target.getClassName() === "Line") {
-            setChosenEdges((prevEdges) => ([...prevEdges, e.target.attrs.points]));
+            let id = e.target.id()
+            // console.log("line")
+            // console.log(id)
+            // console.log(edges)
+            setChosenEdgesID((prevEdges) => ([...prevEdges, {start: edges[id].id1, end: edges[id].id2}]));
+            setChosenEdgesCords((prevEdges) => ([...prevEdges, e.target.attrs.points]))
+            // console.log("ids:")
+            // console.log(JSON.stringify({start: edges[id].id1, end: edges[id].id2}))
         }
-    }, []);
+    }, [edges]);
 
 
     const generateQuarter = useCallback(() => {
 
         let pointSet = new Set()
-        const points = chosenEdges.reduce((acc, edge) => {
+        const points = chosenEdgesCords.reduce((acc, edge) => {
             acc.add(JSON.stringify({x: edge[0], y: edge[1]}));
             acc.add(JSON.stringify({x: edge[2], y: edge[3]}))
             // console.log(edge)
@@ -31,8 +40,8 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
 
         // Get the center (mean value) using reduce
         const center = formattedSet.reduce((acc, {x, y}) => {
-            console.log(x)
-            console.log(y)
+            // console.log(x)
+            // console.log(y)
             acc.x += x / formattedSet.length;
             acc.y += y / formattedSet.length;
             return acc;
@@ -47,28 +56,54 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
         // Sort your points by angle
         const pointsSorted = angles.sort((a, b) => a.angle - b.angle);
         let borders = []
+        let start
+        let end
+        let startId
+        let endId
+        // console.log("Before")
+        // console.log(chosenEdgesID)
+        // console.log(pointsSorted)
 
-        // console.log("Before " + chosenEdges)
         for (let i = 0; i < pointsSorted.length - 1; i++) {
-            let start = pointsSorted[i]
-            let end = pointsSorted[i + 1]
+            start = pointsSorted[i]
+            end = pointsSorted[i + 1]
+            vertices.map((vertex) => {
+                if (vertex.x === start.x && vertex.y === start.y) {
+                    startId = vertex.id
+                }
+                if (vertex.x === end.x && vertex.y === end.y) {
+                    endId = vertex.id
+                }
+            })
             borders.push({
-                start: [start.x, start.y],
-                end: [end.x, end.y]
+                start: startId,
+                end: endId
             })
         }
-        let start = pointsSorted[pointsSorted.length - 1]
-        let end = pointsSorted[0]
-        borders.push({
-            start: [start.x, start.y],
-            end: [end.x, end.y]
+        start = pointsSorted[pointsSorted.length - 1]
+        end = pointsSorted[0]
+        vertices.map((vertex) => {
+            if (vertex.x === start.x && vertex.y === start.y) {
+                startId = vertex.id
+            }
+            if (vertex.x === end.x && vertex.y === end.y) {
+                endId = vertex.id
+            }
         })
-        // console.log("After " + borders)
+        borders.push({
+            start: startId,
+            end: endId
+        })
+
+        // console.log("After")
+        // console.log(chosenEdgesID)
+        // console.log(pointsSorted)
 
         let quarter = {
             color: "yellow",
             borders: borders
         }
+        // console.log(JSON)
         const requestOptions = {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
@@ -82,8 +117,8 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
             .then(data => {
                 console.log(data)
             })
-            .then(() => setChosenEdges([]));
-    }, [chosenEdges]);
+            .then(() => setChosenEdgesCords([]));
+    }, [chosenEdgesID, chosenEdgesCords, vertices]);
 
 
     useEffect(() => {
@@ -107,11 +142,11 @@ const Landscape = ({mode, eventsHandler, changeInstruments, quarters, quartersHa
                 landscape: true,
             }))
         }
-    }, [mode, generateQuarter, chosenEdges, changeInstruments]);
+    }, [mode, generateQuarter, chosenEdgesID, changeInstruments]);
     return (
         <Layer>
             <Group>
-                {mode && chosenEdges.map((edge, i) => (
+                {mode && chosenEdgesCords.map((edge, i) => (
                     <Line
                         key={i.toString()}
                         points={edge}

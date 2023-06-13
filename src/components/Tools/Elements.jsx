@@ -3,50 +3,6 @@ import {Layer} from "react-konva";
 import ElementShape from "./ElementShape";
 
 const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
-    // const [chosenEdges, setChosenEdges] = useState(
-    //     []
-    // );
-    //
-    // const chooseEdges = useCallback((e) => {
-    //     if (e.target.getClassName() === "Line") {
-    //         console.log("where?")
-    //         e.target.attrs.stroke = "red";
-    //         setChosenEdges(chosenEdges.concat([e.target.attrs.points]));
-    //     }
-    // }, [chosenEdges]);
-    //
-    // const generateQuarter = useCallback(() => {
-    //     let edges = []
-    //
-    //     for (let chosenEdge in chosenEdges) {
-    //         edges.push(new Segment(chosenEdge[0], chosenEdge[1], chosenEdge[2], chosenEdge[3]))
-    //     }
-    //
-    //     let quarter = new Quarter(edges)
-    //     quarter.generateBuildings()
-    // }, [chosenEdges]);
-    // useEffect(() => {
-    //     if (mode === "choosing") {
-    //         eventsHandler({
-    //             onDblClick: chooseEdges,
-    //             onMouseup: null,
-    //             onMouseDown: chooseEdges,
-    //             onMousemove: null
-    //         })
-    //     }
-    // }, [eventsHandler, mode, chooseEdges]);
-    //
-    // useEffect(() => {
-    //     if (mode === "generating") {
-    //         eventsHandler({
-    //             onDblClick: null,
-    //             onMouseup: null,
-    //             onMouseDown: null,
-    //             onMousemove: null
-    //         });
-    //         generateQuarter();
-    //     }
-    // }, [eventsHandler, mode, generateQuarter]);
     const address = "10.244.204.9"
     // const [elements, setElements] = useState([]);
     const [selectedId, selectShape] = React.useState(null);
@@ -54,18 +10,6 @@ const Elements = ({mode, eventsHandler, elements, elementsHandler}) => {
     const checkDeselect = (e) => {
         const clickedOnEmpty = e.target === e.target.getStage();
         if (clickedOnEmpty) {
-            // const requestOptions = {
-            //     method: 'PUT',
-            //     headers: {'Content-Type': 'application/json'},
-            //     body: JSON.stringify({
-            //         id: selectedId
-            //     })
-            // };
-            // fetch(`http://${address}:8000/objects/deselect`, requestOptions)
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         console.log(data)
-            //     });
             selectShape(null);
         }
     };

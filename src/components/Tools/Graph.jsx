@@ -230,6 +230,7 @@ const Graph = ({mode, eventsHandler, vertices, verticesHandler, edges, edgesHand
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         id1: currentStartId,
+                        //Misha should give me new id for the add2 request, or we will have to handle this another way...
                         start: coords1,
                         end: [pos.x, pos.y]
                     })

@@ -169,6 +169,8 @@ const Canvas = ({instruments, htools, changeHtools, changeInstruments}) => {
                            changeInstruments={changeInstruments}
                            quarters={quarters}
                            quartersHandler={setQuarters}
+                           edges={edges}
+                           vertices={vertices}
                 />
                 <Elements mode={instruments.elements}
                           eventsHandler={setEvents}
